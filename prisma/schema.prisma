@@ -1,0 +1,4751 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+model change_log {
+    id         Int       @id @default(autoincrement())
+    title      String?
+    detail     String?
+    version    String?
+    created_at DateTime @default(now())
+}
+
+model critical_path {
+  id         Int       @id @default(autoincrement())
+  project_id Int?
+  item       String?   @db.VarChar(255)
+  plan       DateTime? @db.Date
+  status     String?   @db.VarChar(255)
+  remark     String?   @db.VarChar(255)
+  projects   projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model cyber_security_regen {
+  id                      Int       @id @default(autoincrement())
+  project_id              Int?
+  period                  String?   @db.VarChar(255)
+  policy_description      String?   @db.VarChar(255)
+  cybersecurity_incidents Int?
+  response_plan           String?   @db.VarChar(255)
+  indicator               String?   @db.VarChar(255)
+  created_at              DateTime? @db.Timestamp(6)
+  updated_at              DateTime? @db.Timestamp(6)
+  // projects                projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model energy_consumption {
+  id               Int       @id @default(autoincrement())
+  project_id       Int?
+  period           String?   @db.VarChar(255)
+  year             Int?
+  type             String?   @db.VarChar(255)
+  consumption      Float?
+  unit             String?   @db.VarChar(50)
+  source           String?   @db.VarChar(255)
+  indicator        String?   @db.VarChar(255)
+  reduction_target String?   @db.VarChar(255)
+  created_at       DateTime? @db.Timestamp(6)
+  updated_at       DateTime? @db.Timestamp(6)
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_performance_targets {
+  id                  Int       @id @default(autoincrement())
+  project_id          Int?
+  target_year         Int?
+  goal_description    String?
+  progress_percentage Float?
+  indicator           String?   @db.VarChar(255)
+  created_at          DateTime? @db.Timestamp(6)
+  updated_at          DateTime? @db.Timestamp(6)
+  projects            projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_score {
+  id         Int       @id @default(autoincrement())
+  project_id Int?
+  aspect     String?   @db.VarChar(255)
+  value      Float?
+  remark     String?   @db.VarChar(255)
+  projects   projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model failed_jobs {
+  id         Int   @id @default(autoincrement())
+  uuid       String   @unique(map: "failed_jobs_uuid_unique") @db.VarChar(255)
+  connection String
+  queue      String
+  payload    String
+  exception  String
+  failed_at  DateTime @default(now()) @db.Timestamp(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model financial_statement_profit_loss {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Profit_Loss?   
+  units        String?   @db.VarChar(10)
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+  created_at             DateTime?  @default(now()) // Waktu data dibuat
+  updated_at             DateTime?  @updatedAt       // Waktu data di-update  
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model financial_statement_profit_loss_json {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Profit_Loss?   
+  data Json?
+    year_period  Int?
+  created_at             DateTime?  @default(now()) 
+  updated_at             DateTime?  @updatedAt         
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model financial_statement_profit_loss_json_plan {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Profit_Loss?   
+  data Json?
+    year_period  Int?
+  created_at             DateTime?  @default(now()) 
+  updated_at             DateTime?  @updatedAt         
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model financial_statement_profit_loss_plan {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Profit_Loss?   
+  units        String?   @db.VarChar(10)
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+  created_at             DateTime?  @default(now()) // Waktu data dibuat
+  updated_at             DateTime?  @updatedAt       // Waktu data di-update  
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum Metric_Profit_Loss {
+  REVENUE
+  COST_OF_GOOD_SOLD
+  GROSS_PROFIT
+  SELLING_GENERAL_ADMINISTRATIVE
+  OPERATING_PROFIT
+  FINANCE_COST
+  FINANCE_INCOME
+  FX_GAIN_LOSS
+  OTHER_INCOME
+  TAX_BENEFIT_EXPENSES
+  NET_INCOME
+  POKOK_SHL
+  BUNGA_SHL
+  DIVIDEN
+  CURRENCY_IN_MODEL
+  CURRENCY_REALIZATION
+  INTEREST_IN_MODEL
+  INTEREST_REALIZATION
+  ID_CPI_IN_MODEL
+  ID_CPI_REALIZATION
+  US_CPI_IN_MODEL
+  US_CPI_REALIZATION
+}
+
+model periodic_report_macroeconomic {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Macroeconomic?
+  units        Unit_Macroeconomic?
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+  updated_at             DateTime?  @updatedAt     
+  created_at    DateTime? @default(now())
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model periodic_report_macroeconomic_plan {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Macroeconomic?
+  units        Unit_Macroeconomic?
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+  updated_at             DateTime?  @updatedAt     
+  created_at    DateTime? @default(now())
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+enum Metric_Macroeconomic {
+  CURRENCY_IN_MODEL
+  CURRENCY_REALIZATION
+  INTEREST_IN_MODEL
+  INTEREST_REALIZATION
+  ID_CPI_IN_MODEL
+  ID_CPI_REALIZATION
+  US_CPI_IN_MODEL
+  US_CPI_REALIZATION
+}
+
+model financial_statement_balance_sheet {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Balance_Sheet?   
+  units        String?   @db.VarChar(10)
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+  created_at             DateTime?  @default(now()) 
+  updated_at             DateTime?  @updatedAt        
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum Metric_Balance_Sheet {
+  TOTAL_ASSETS
+  CURRENT_ASSETS
+  RECEIVABLES
+  INVENTORY
+  NON_CURRENT_ASSETS
+  TOTAL_LIABILITIES
+  CURRENT_LIABILITY
+  BANK_LOAN
+  SHAREHOLDER_LOAN
+  LONG_TERM_LIABILITY
+  EQUITY
+  SHARE_CAPITAL
+  RETAINED_EARNING
+  TOTAL_LIABILITIES_AND_EQUITY
+}
+
+
+model financial_statement_cashflow_statement {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Cashflow_Statement?   
+  units        String?   @db.VarChar(10)
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+  created_at             DateTime?  @default(now()) // Waktu data dibuat
+  updated_at             DateTime?  @updatedAt       // Waktu data di-update  
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum Metric_Cashflow_Statement {
+  CASH_FROM_OPERATION
+  CASH_FROM_INVESTING
+  CASH_FROM_FINANCING
+  REPAYMENT_BANK_LOAN
+  REPAYMENT_SHAREHOLDER_LOAN
+  CASH_INCREASE_DECREASE
+  BEGINNING_CASH
+  FX_GAIN_LOSS
+  ENDING_CASH
+}
+
+
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model general_info {
+  id         Int       @id @default(autoincrement())
+  project_id Int?
+  metric     String?   @db.VarChar(255)
+  unit       String?   @db.VarChar(255)
+  value      Float?
+  projects   projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+
+model information_operation {
+      id          Int       @id @default(autoincrement())
+      project_id  Int
+      year Int
+   levelized_tariff Float?
+  estimation_energy Float?
+    co2_reduction Float?
+   coal_saved Float?
+   trees_planted Float?
+  projects    projects @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    @@unique([project_id, year])
+
+
+}
+
+model informations {
+    id          Int       @id @default(autoincrement())
+  project_id  Int @unique
+  estimation_energy Float?
+  // energy_equivalent Float?
+  trees_planted Float?
+  co2_reduction Float?
+  tariff_bpp Float?
+   levelized_tariff Float?
+   coal_saved Float?
+
+   target Float?
+   capacian Float?
+  year Int
+  created_at  DateTime? @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+  projects    projects @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([project_id, year])
+}
+
+model governance {
+  id          Int       @id @default(autoincrement())
+  project_id  Int?
+  period      String?   @db.VarChar(255)
+  policy_type String?   @db.VarChar(255)
+  details     String?   @db.VarChar(255)
+  indicator   String?   @db.VarChar(255)
+  created_at  DateTime? @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+  projects    projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+
+model human_capital {
+  id               Int       @id @default(autoincrement())
+  project_id       Int?
+  period           String?   @db.VarChar(255)
+  employee_type    String?   @db.VarChar(255)
+  employee_count   Int?
+  training_program String?   @db.VarChar(255)
+  indicator        String?   @db.VarChar(255)
+  created_at       DateTime? @db.Timestamp(6)
+  updated_at       DateTime? @db.Timestamp(6)
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model issue_colaborators {
+  id       Int    @id
+  issue_id Int?
+  user_id  Int?
+  users    users? @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model issue {
+  id          Int             @id @default(autoincrement())
+  projectId   Int?             @map("project_id")
+  dueDate     DateTime?        
+  issue        String          @db.VarChar(255)
+  follow_up String
+  priority    IssuePriority?   @map("priority")
+  status      IssueStatus?     @map("status")
+  type IssueType
+  remark      String?         @db.Text
+  assigneeId  Int?             @map("assignee")
+  project     projects?         @relation(fields: [projectId], references: [id])
+  assignee    users?        @relation(fields: [assigneeId], references: [id])
+}
+
+enum IssueType {
+  IRR
+  TKDN
+  ENGINEERING
+  CONSTRUCTION
+  TESTCOMISSION
+  PENYEDIAAN_ENERGI_PRIMER
+  PENYEDIAAN_JASA_OPERATION_DAN_MAINTENANCE
+  COMMERCIAL_OPERATION_DATE
+  FINANCIAL_COST
+
+}
+
+
+model job_batches {
+  id             String  @id @db.VarChar(255)
+  name           String  @db.VarChar(255)
+  total_jobs     Int
+  pending_jobs   Int
+  failed_jobs    Int
+  failed_job_ids String
+  options        String?
+  cancelled_at   Int?
+  created_at     Int
+  finished_at    Int?
+}
+
+model jobs {
+  id           Int @id @default(autoincrement())
+  queue        String @db.VarChar(255)
+  payload      String
+  attempts     Int    @db.SmallInt
+  reserved_at  Int?
+  available_at Int
+  created_at   Int
+
+  @@index([queue], map: "jobs_queue_index")
+}
+
+
+
+model meeting_attachments {
+  id         Int       @id @default(autoincrement())
+  file_unique String @unique @default(uuid())
+  meeting_id Int?
+  file_url   String?
+  meetings   meetings? @relation(fields: [meeting_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model meetings {
+  id                  Int                   @id
+  project_id          Int?
+  prod_bussines       String?               @db.VarChar(255)
+  name                String?               @db.VarChar(255)
+  conducted_at        DateTime?             @db.Date
+  issue               String?
+  contents            String?
+  participants        Json?                 @db.Json
+  approved_by         Int?
+  key_indicator       Json?                 @db.Json
+  meeting_attachments meeting_attachments[]
+  projects            projects?             @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model migrations {
+  id        Int    @id @default(autoincrement())
+  migration String @db.VarChar(255)
+  batch     Int
+}
+
+// model model_has_permissions {
+//   permission_id Int
+//   model_type    String      @db.VarChar(255)
+//   model_id      Int
+//   permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: SetNull, onUpdate: SetNull, map: "model_has_permissions_permission_id_foreign")
+
+//   @@id([permission_id, model_id, model_type])
+//   @@index([model_id, model_type], map: "model_has_permissions_model_id_model_type_index")
+// }
+
+// model model_has_roles {
+//   role_id    Int
+//   model_type String @db.VarChar(255)
+//   model_id   Int
+//   roles      roles  @relation(fields: [role_id], references: [id], onDelete: SetNull, onUpdate: SetNull, map: "model_has_roles_role_id_foreign")
+
+//   @@id([role_id, model_id, model_type])
+//   @@index([model_id, model_type], map: "model_has_roles_model_id_model_type_index")
+// }
+
+model password_reset_tokens {
+  email      String    @id @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+
+model periodic_report_technical_operation_plts {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Technical_Operational_Plts?
+  units        Unit_Technical_Operational_Plts?
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model periodic_report_technical_operation_plts_plan {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Technical_Operational_Plts?
+  units        Unit_Technical_Operational_Plts?
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model periodic_report_technical_operation_plts_json {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Technical_Operational_Plts?
+  data Json?
+  year_period  Int?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model periodic_report_technical_operation_plts_plan_json {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Technical_Operational_Plts?
+  data Json?
+  year_period  Int?
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+
+enum Metric_Technical_Operational_Plts {
+  NON_ADJUSTED_PROJECTED_AVAILABLE_ENERGY
+  DECLARED_OUTAGE_ADJUSTED_FACTOR
+  OUTAGE_ADJUSTED_PROJECTED_AVAILABLE_ENERGY
+  GUARANTEED_MINIMUM_PRODUCTIVITY
+  ACTUAL_PRODUCTION
+  ACTUAL_PRODUCTIVITY_RATE
+  PRODUCTIVITY_CAP
+  ENERGY_CAP_THIS_MONTH
+  BILLED_ENERGY_AEM
+  UN_BILL_ABLE_EXCESS_ENERGY
+  PENALTY_KVARH
+  PERFORMANCE_RATIO
+  OVERALL_LOSS_OF_PRODUCTION
+  PLANT_AVAILABILITY
+  PRODUKSI_ENERGY
+  PEAK_SUN_HOUR
+  HOP
+  AVAILABILITY_FACTOR
+  CAPACITY_FACTOR
+  NPHR
+  PRODUKSI_LISTRIK
+}
+
+enum Unit_Technical_Operational_Plts {
+  KWH
+  PERCENT
+  KVARH
+}
+
+
+
+model periodic_report_technical_operation_pltu {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Technical_Operational_Pltu?
+  units        Unit_Technical_Operational_Pltu?
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum Metric_Technical_Operational_Pltu {
+  ENERGY_GENERATED
+  ENERGY_SALES
+  COAL_STOCK
+  HOP
+  CF_PLAN
+  CF
+  EAF
+  EFOR
+  SDOF
+  NPHR_PLAN
+  NPHR
+  AFPM_DECLARE
+  AFA
+  LOSS_OF_PRODUCTION
+}
+
+enum Unit_Technical_Operational_Pltu {
+  MWH
+  MT
+  DAY
+  PERCENT
+  KALI_PER_UNIT
+  KCAL_PER_KWH
+}
+
+
+model periodic_report_free_cashflow_to_equity {
+  id           Int                       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Free_Cashflow_to_Equity?
+  units        String?                   @db.VarChar(10)
+  value        Decimal?                  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+  projects     projects?                 @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum Metric_Free_Cashflow_to_Equity {
+  EQUITY_DRAWDOWN
+  SHAREHOLDER_LOAN_DRAWDOWN
+  REPAYMENT_SHAREHOLDER_LOAN
+  INTEREST_ON_SHAREHOLDER_LOAN
+  DIVIDEND
+  FCFE
+}
+
+
+
+enum Unit_Macroeconomic {
+  USD_IDR
+  PERCENT
+  POINT
+}
+
+model installed_capacity {
+  id           Int       @id @default(autoincrement())
+  project_id   Int?
+  metric       Metric_Installed_Capacity?
+  units        Unit_Installed_Capacity?
+  value        Decimal?  @db.Decimal(20, 2)
+  month_period Int?
+  year_period  Int?
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+enum Metric_Installed_Capacity {
+  GROSS
+  NET
+}
+
+enum Unit_Installed_Capacity {
+  MW
+}
+
+
+model personal_access_tokens {
+  id             Int    @id @default(autoincrement())
+  tokenable_type String    @db.VarChar(255)
+  tokenable_id   Int
+  name           String    @db.VarChar(255)
+  token          String    @unique(map: "personal_access_tokens_token_unique") @db.VarChar(64)
+  abilities      String?
+  last_used_at   DateTime? @db.Timestamp(0)
+  expires_at     DateTime? @db.Timestamp(0)
+  created_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @db.Timestamp(0)
+
+  @@index([tokenable_type, tokenable_id], map: "personal_access_tokens_tokenable_type_tokenable_id_index")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model power_plants {
+  id                                Int     @id @default(autoincrement())
+  type                              PowerPlantType?    @map("type")
+  capacity                          String? @db.VarChar(100)
+  capacity_actual                   Float?
+  capacity_actual_unit                     String?
+  max_output_unit String?
+  max_output Float? 
+  energy_generated_per_year         Float?
+  equivalent_co2_reduction_per_year Float?
+  interconnection                   String?
+  area                              Float?
+  lat                               Float?
+  lng                               Float?
+  project_id   Int? @unique
+
+  projects     projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model procurement {
+  id            Int       @id @default(autoincrement())
+  project_id    Int?
+  item          String?   @db.VarChar(255)
+  start_plan    DateTime? @db.Date
+  finish_plan   DateTime? @db.Date
+  start_actual  DateTime? @db.Date
+  finish_actual DateTime? @db.Date
+  projects      projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model project_costs {
+  id         Int       @id @default(autoincrement())
+  project_id Int?
+  metric     String?   @db.VarChar(255)
+  unit       String?   @db.VarChar(255)
+  value      Float?
+  projects   projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model project_irr {
+  id         Int       @id @default(autoincrement())
+  project_id Int?
+  date       DateTime?
+  irr        Float?
+  updated_at DateTime? @db.Date
+  updated_by Int?
+  created_at       DateTime  @default(now())
+  projects   projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  users      users?    @relation(fields: [updated_by], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model project_tkdn {
+  id         Int       @id @default(autoincrement())
+  project_id Int?
+  date       DateTime?
+  tkdn        Float?
+  updated_at DateTime? @db.Date
+  updated_by Int?
+  created_at       DateTime  @default(now())
+  projects   projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  users      users?    @relation(fields: [updated_by], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model project_issues {
+  id          Int @id @default(autoincrement())
+  project_id  Int?
+  issue String?
+  types       IssuePriority?
+  status      IssueStatus?     @map("status")
+  assigneeId  Int?             @map("assignee")
+  category String?
+  name String?
+  created_at             DateTime?  @default(now()) // Waktu data dibuat
+  updated_at             DateTime?  @updatedAt       // Waktu data di-update  
+  date     DateTime?        
+
+  description String?   @db.VarChar(255)
+  follow_up   String?   @db.VarChar(255)
+  projects    projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model project_executive_summary {
+  id          Int @id @default(autoincrement())
+  project_id  Int?
+  issue String?
+  types       IssuePriority?
+  category String?
+  name String?
+  created_at             DateTime?  @default(now()) // Waktu data dibuat
+  updated_at             DateTime?  @updatedAt       // Waktu data di-update  
+  date     DateTime?        
+
+  description String?   @db.VarChar(255)
+  follow_up   String?   @db.VarChar(255)
+  projects    projects? @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+}
+
+model project_milestone {
+  id         Int       @id @default(autoincrement())
+  project_id Int?
+  name       String?   @db.VarChar(255)
+  start_date DateTime? @db.Date
+  deadline_date   DateTime? @db.Date
+  created_at DateTime? 
+  projects   projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  project_milestone_timeline project_milestone_timeline[]
+}
+
+
+model project_milestone_timeline {
+  id         Int       @id @default(autoincrement())
+  project_milestone_id Int?
+  name       String?   @db.VarChar(255)
+  start_date DateTime? @db.Date
+  deadline_date   DateTime? @db.Date
+  description String?
+  detail     String[]
+  status     Int?      @db.SmallInt
+  created_at DateTime? 
+  projects   project_milestone? @relation(fields: [project_milestone_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  project_id Int?
+
+
+  media_project_milestone media_project_milestone[]
+  pool_file_milestone pool_file_milestone[]
+  project_milestone_timeline_details project_milestone_timeline_details[]
+}
+
+model project_milestone_timeline_details {
+  id         Int       @id @default(autoincrement())
+  project_milestone_timeline_id Int?
+  name       String?   @db.VarChar(255)
+  description String?
+  created_at DateTime? 
+  projects   project_milestone_timeline? @relation(fields: [project_milestone_timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model pool_file_milestone {
+  id          String   @id @default(uuid()) 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  milestone_time_id Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  milestone     project_milestone_timeline?  @relation(fields: [milestone_time_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model media_project_milestone {
+    id         Int       @id @default(autoincrement())
+    project_milestone_id Int?
+    link_media String?
+
+    created_at             DateTime?  @default(now()) // Waktu data dibuat
+    updated_at             DateTime?  @updatedAt       // Waktu data di-update  
+
+    project_milestone    project_milestone_timeline? @relation(fields: [project_milestone_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model project_plan_timeline {
+  id          Int       @id @default(autoincrement())
+  project_id  Int?
+  description String?   @db.VarChar(255)
+  start_date  DateTime? @db.Date
+  finish_date DateTime? @db.Date
+  weight      Float?
+  projects    projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model project_plan_timeline_details {
+  id              Int       @id @default(autoincrement())
+  project_plan_id Int?
+  version         Int?
+  duedate         DateTime? @db.Date
+  planing         Float?
+  actual          Float?
+}
+
+model project_shareholders {
+  id             Int           @id @default(autoincrement())
+  project_id     Int?
+  shareholder_id Int?
+  percentage     Float?
+  projects       projects?     @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  shareholders   shareholders? @relation(fields: [shareholder_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model project_timeline {
+  id                      Int                       @id @default(autoincrement())
+  project_id              Int?
+  title                    String?                   @db.VarChar(255)
+  description     String?
+  attachment_link String?
+  type String?
+  date DateTime?
+  projects                projects?                 @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+// model project_timeline_detail {
+//   id               Int               @id @default(autoincrement())
+//   timeline_id      Int?
+//   name             String?           @db.VarChar(255)
+//   deadline         DateTime?         @db.Date
+//   project_timeline project_timeline? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+// }
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model project_metrics_history {
+    id                      Int                       @id @default(autoincrement())
+    project_cost            Float?
+    rates                   Float?
+    irr                     Float?
+    anually_contract_energy        Float?
+    anually_contract_energy_unit String?
+    project_id Int? 
+    created_at             DateTime?  @default(now()) // Waktu data dibuat
+    updated_at             DateTime?  @updatedAt       // Waktu data di-update   
+    projects            projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+
+    project_attachment project_attachment[]
+
+}
+
+
+model projects {
+  id                      Int                       @id @default(autoincrement())
+  name                    String                    @db.VarChar(255)
+  developer               String?                   @db.VarChar(255)
+  scheme                  String?                   @db.VarChar(50)
+  project_cost            Float?
+  rates                   Float?
+  required_cod            DateTime?  
+  commercial_operation_date DateTime?             
+  financing               String?                   @db.VarChar(100)
+  epc_contractor          String?
+  phase                   ProjectPhase?              @map("phase")
+  owner                   String?                   @db.VarChar(255)
+  location                String?
+  der                     Float?
+  irr                     Float?
+  tkdn                    Float?
+  coordinate              String?
+  daily                   Float?
+  monthly                 Float?
+  link_video              String?
+  executive_summary String?
+  shareholder Float?
+  slug String?    @unique
+  is_ebt Boolean @default(false)
+  tugas_karya Int?
+  internal_jvc Int?
+  jvc Int?
+  video String?
+  jsd_one Float?
+  jwd_two Float?
+  shareholder_structure String?
+  annual_estimation Float?
+  annual_estimation_unit String?
+  bulanan Float?
+  saldo Float?
+  saldo_actual Float?
+  created_at DateTime @default(now())
+  critical_path           critical_path[]           
+  cyber_security          cyber_security[]
+  energy_consumption      energy_consumption[]
+  esg_performance_targets esg_performance_targets[]
+  esg_score               esg_score[]               
+  financial_statement_profit_loss     financial_statement_profit_loss[]     
+  financial_statement_profit_loss_plan financial_statement_profit_loss_plan[]
+  general_info            general_info[]            
+  governance              governance[]
+  human_capital           human_capital[]
+  installed_capacity      installed_capacity[]      
+  meetings                meetings[]
+  periodic_report_technical_operation_pltu         periodic_report_technical_operation_pltu[]  
+  periodic_report_technical_operation_plts         periodic_report_technical_operation_plts[]  
+  periodic_report_technical_operation_plts_plan periodic_report_technical_operation_plts_plan[]
+  periodic_report_free_cashflow_to_equity periodic_report_free_cashflow_to_equity[]   
+  periodic_report_macroeconomic periodic_report_macroeconomic[]    
+  periodic_report_macroeconomic_plan periodic_report_macroeconomic_plan[]
+  procurement             procurement[]            
+  issues                  issue[]                 // Relasi ke Issue 
+  projects_images_files projects_images_files[]
+  projects_shareholder_files project_shareholder_files[]
+  projects_shareholder_attachment_info project_shareholder_attachment_info[]
+  projects_shareholder_attachment_development project_shareholder_attachment_development[]
+  projects_shareholder_attachment_construction project_shareholder_attachment_construction[]
+  projects_shareholder_attachment_operation project_shareholder_attachment_operation[]
+
+  project_costs           project_costs[]           
+  project_tariffs         project_tariffs[]
+  project_irr             project_irr[]             
+  project_issues          project_issues[]          
+  project_milestone       project_milestone[]       
+  project_plan_timeline   project_plan_timeline[]  
+  project_shareholders    project_shareholders[]
+  project_timeline        project_timeline[]
+  power_plants             power_plants[]
+  social_responsibility   social_responsibility[]
+  construction_info       construction_info[]
+  waste_management        waste_management[]
+  information_operation information_operation[]
+  actual_plan     actual_plan[]
+  project_metrics_history project_metrics_history[]
+  actual_plan_info_plan actual_plan_info_plan[]
+  actual_plan_date_plan actual_plan_date_plan[]
+  actual_plan_info_actual actual_plan_info_actual[]
+  penyediaan_energy_primer penyediaan_energy_primer[]
+  indicative_timeline_energy_primer indicative_timeline_energy_primer[]
+  penyedia_jasa_operation_dan_maintenance penyedia_jasa_operation_dan_maintenance[]
+  indicative_timeline_jasa_operation_dan_maintenance indicative_timeline_jasa_operation_dan_maintenance[]
+  commercial_operation_date_info commercial_operation_date[]
+  indicative_timeline_commercial_operation_date indicative_timeline_commercial_operation_date[]
+  financial_close financial_close[]
+  indicative_timeline_financial_close indicative_timeline_financial_close[]
+  epc_cost_realization_detail epc_cost_realization_detail[]
+  epc_cost_realization epc_cost_realization[]
+  project_attachment project_attachment[]
+  project_tkdn project_tkdn[]
+  financial_statement_cashflow_statement financial_statement_cashflow_statement[] 
+  financial_statement_balance_sheet financial_statement_balance_sheet[]
+  esg_environment esg_environment[]
+  esg_governance esg_governance[]
+  esg_social esg_social[]
+  shadow_rating shadow_rating[]
+  energy_usage energy_usage[]
+  energy_usage_air energy_usage_air[]
+  waste_produced waste_produced[]
+  waste_managed waste_managed[]
+  waste_B3 waste_B3[]
+  tree_planting tree_planting[]
+  // green_energy_production green_energy_production[]
+  community_empowerment community_empowerment[]
+  esg_shadow_rating_info esg_shadow_rating_info[]
+  employee employee[]
+  human_rights_overview human_rights_overview[]
+  human_rights_attachment human_rights_attachment[]
+  human_rights_case human_rights_case[]
+  occupational_health_and_safety occupational_health_and_safety[]
+  customer_satisfaction_survey_index customer_satisfaction_survey_index[]
+  governance_risk_compliance governance_risk_compliance[]
+  occupational_health_and_safety_attachment occupational_health_and_safety_attachment[]
+  money_laundering_policy money_laundering_policy[]
+  money_laundering_policy_attachment money_laundering_policy_attachment[]
+  whistleblowing_system whistleblowing_system[]
+  whistleblowing_system_attachment whistleblowing_system_attachment[]
+  cyber_security_attachment cyber_security_attachment[]
+  esg_performance_targets_pact esg_performance_targets_pact[]
+  folder folder[]
+  realization realization[]
+  realization_history realization_history[]
+  esg_energy_consumption esg_energy_consumption[]
+  esg_energy_consumption_total esg_energy_consumption_total[]
+  esg_energy_reduction_total esg_energy_reduction_total[]
+  esg_energy_reduction esg_energy_reduction[]
+  esg_water_consumption esg_water_consumption[]
+  esg_water_total esg_water_total[]
+  esg_waste_generated_produced esg_waste_generated_produced[]
+  esg_waste_generated_managed esg_waste_generated_managed[]
+  esg_waste_generated_b_three esg_waste_generated_b_three[]
+  esg_trees_planted esg_trees_planted[]
+  esg_community_empowerment esg_community_empowerment[]
+  esg_employee esg_employee[]
+  esg_human_capital esg_human_capital[]
+  esg_employee_v2 esg_employee_v2[]
+  esg_human_rights_report esg_human_rights_report[]
+  esg_human_rights_report_attachment esg_human_rights_report_attachment[]
+  esg_k_three_violation_report esg_k_three_violation_report[]
+  esg_k_three_violation_report_attachment esg_k_three_violation_report_attachment[]
+  esg_satisfaction esg_satisfaction[]
+  esg_governance_risk_compliance esg_governance_risk_compliance[]
+  esg_money_laundering_report esg_money_laundering_report[]
+
+  project_users project_users[]
+  esg_Whistleblowing_cases esg_whistleblowing_cases[]
+  esg_cyber_security esg_cyber_security[]
+  dashboard_overview dashboard_overview[]
+  esg_water_consumption_history esg_water_consumption_history[]
+  esg_energy_consumption_history esg_energy_consumption_history[]
+  esg_energy_reduction_history esg_energy_reduction_history[]
+  esg_waste_generated_produced_history esg_waste_generated_produced_history[]
+  esg_waste_generated_managed_history esg_waste_generated_managed_history[]
+  esg_waste_generated_b_three_history esg_waste_generated_b_three_history[]
+  esg_green_energy esg_green_energy[]
+  esg_shadow_rating esg_shadow_rating[]
+  esg_trees_planted_history esg_trees_planted_history[]
+  esg_community_empowerment_history esg_community_empowerment_history[]
+  esg_human_rights_report_history esg_human_rights_report_history[]
+  esg_k_three_violation_report_history esg_k_three_violation_report_history[]
+  esg_satisfaction_history esg_satisfaction_history[]
+  esg_satisfaction_ins_follow esg_satisfaction_ins_follow[]
+  esg_governance_risk_compliance_history esg_governance_risk_compliance_history[]
+  esg_governance_risk_compliance_ins_follow  esg_governance_risk_compliance_ins_follow[]
+  esg_governance_risk_compliance_ins_follow_v_two esg_governance_risk_compliance_ins_follow_v_two[]
+  esg_money_laundering_report_history esg_money_laundering_report_history[]
+  esg_whistleblowing_cases_history esg_whistleblowing_cases_history[]
+  esg_cyber_security_history esg_cyber_security_history[]
+  project_images project_images[]
+  esg_performance esg_performance[]
+  esg_performance_history esg_performance_history[]
+  project_permissions project_permissions[]
+  esg_green_energy_history esg_green_energy_history[]
+  esg_money_laundering_report_attachment esg_money_laundering_report_attachment[]
+  esg_whistleblowing_attachment esg_whistleblowing_attachment[]
+  esg_cyber_security_attachment esg_cyber_security_attachment[]
+  esg_performance_attachment_direksi esg_performance_attachment_direksi[]
+  esg_performance_attachment_komisaris esg_performance_attachment_komisaris[]
+  esg_performance_attachment_manajement esg_performance_attachment_manajement[]
+  mom mom[]
+  mom_issues mom_issues[]
+  project_attachment_info project_attachment_info[]
+  project_attachment_operation project_attachment_operation[]
+  project_attachment_construction project_attachment_construction[]
+  project_attachment_development project_attachment_development[]
+
+
+
+
+  financial_statement_profit_loss_json financial_statement_profit_loss_json[]
+  financial_statement_profit_loss_json_plan financial_statement_profit_loss_json_plan[]
+  periodic_report_technical_operation_plts_json periodic_report_technical_operation_plts_json[]
+  periodic_report_technical_operation_plts_plan_json periodic_report_technical_operation_plts_plan_json[]
+  epc_cost_realization_detail_json epc_cost_realization_detail_json[]
+
+  // Milestone Parent
+  development_timeline development_timeline[] 
+  indicative_timeline_milestone_permission indicative_timeline_milestone_permission[]
+  indicative_timeline_milestone_penyedia_lahan indicative_timeline_milestone_penyedia_lahan[]
+  indicative_timeline_milestone_construction indicative_timeline_milestone_construction[]
+  indicative_timeline_milestone_OPM indicative_timeline_milestone_OPM[]
+  indicative_timeline_milestone_commercial_date indicative_timeline_milestone_commercial_date[]
+  indicative_timeline_milestone_financial_close indicative_timeline_milestone_financial_close[]
+
+  informations informations[]
+  photo_scurve photo_scurve[]
+  project_photo_scurve_attachment project_photo_scurve_attachment[]
+  project_executive_summary project_executive_summary[]
+  epc_cost_realization_construction epc_cost_realization_construction[]
+  mom_key_indicator mom_key_indicator[]
+
+  scurve_weight scurve_weight[]
+  scurve scurve[]
+  esg_combined_employee esg_combined_employee[]
+  cctv cctv[]
+  irr_on_equity irr_on_equity[]
+  irr_on_equity_history irr_on_equity_history[]
+  
+}
+
+model project_images {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model projects_images_files {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      project_id  Int? 
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+
+      project     projects? @relation(fields: [project_id], references: [id])
+}
+
+model project_shareholder_attachment_info {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model project_shareholder_attachment_development {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model project_shareholder_attachment_construction {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model project_shareholder_attachment_operation {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model project_shareholder_files {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      project_id  Int? 
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+
+      project     projects? @relation(fields: [project_id], references: [id])
+}
+
+model project_attachment_info {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String?
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)    
+}
+
+model project_attachment_construction {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String?
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)    
+}
+
+model project_attachment_development {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String?
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)    
+}
+
+model project_attachment_operation {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String?
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)    
+}
+
+
+
+
+model project_attachment {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String?
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    metrics_history_id Int?
+    
+    project_metrics_history project_metrics_history? @relation(fields: [metrics_history_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model project_tariffs {
+    id                      Int                       @id @default(autoincrement())
+    project_id Int?
+    name String?
+    value Float? 
+    unit String?
+    updated_at          DateTime? @db.Timestamp(6)
+      created_at          DateTime? @db.Timestamp(6)
+
+    projects            projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull) 
+}
+
+enum ProjectPhase {
+  INITIATION
+  DEVELOPMENT
+  CONSTRUCTION
+  OPERATION
+}
+
+enum PowerPlantType {
+  PLTA
+  PLTB
+  PLTS
+  PLTU
+}
+
+model project_issue {
+    id                      Int                       @id @default(autoincrement())
+
+}
+
+enum IssueTypes {
+  ENGINEERING
+  KONSTRUKSI
+  TKDN
+  PENYEDIAAN_ENERGI_PRIMER
+  PENYEDIAAN_JASA_OM
+  PENYEDIAAN_ORGANISASI_SDM
+  COMMERCIAL_OPERATION_DATE
+  FINANCIAL_CLOSE
+}
+
+enum FinancialReportType {
+  PROFIT_AND_LOSS
+  BALANCE_SHEET
+  CASHFLOW
+}
+
+enum PeriodicReportType {
+  TECHNICAL_OPERATION
+  FREE_CASHFLOW_TO_EQUITY
+  MACROECONOMIC
+}
+
+enum IssuePriority {
+  HIGH
+  MID
+  LOW
+}
+
+enum IssueStatus {
+  OPEN
+  ON_PROGRESS
+  COMPLETE
+}
+
+// model role_has_permissions {
+//   permission_id Int
+//   role_id       Int
+//   permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: SetNull, onUpdate: SetNull, map: "role_has_permissions_permission_id_foreign")
+//   roles         roles       @relation(fields: [role_id], references: [id], onDelete: SetNull, onUpdate: SetNull, map: "role_has_permissions_role_id_foreign")
+
+//   @@id([permission_id, role_id])
+// }
+
+// /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+// model role_permissions {
+//   role_id       Int
+//   permission_id Int
+//   permissions   permissions? @relation(fields: [permission_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+//   roles         roles?       @relation(fields: [role_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+//   @@id([role_id, permission_id])  // Composite primary key
+// }
+
+model sessions {
+  id            String  @id @db.VarChar(255)
+  user_id       Int?
+  ip_address    String? @db.VarChar(45)
+  user_agent    String?
+  payload       String
+  last_activity Int
+
+  @@index([last_activity], map: "sessions_last_activity_index")
+  @@index([user_id], map: "sessions_user_id_index")
+}
+
+
+
+model shareholders {
+  id                   Int                    @id @default(autoincrement())
+  name                 String?                @db.VarChar(255)
+  description          String?
+  percentage           Float?
+  project_shareholders project_shareholders[]
+}
+
+model social_responsibility {
+  id                  Int       @id @default(autoincrement())
+  project_id          Int?
+  period              String?   @db.VarChar(255)
+  program_name        String?   @db.VarChar(255)
+  budget              Float?
+  beneficiaries_count Int?
+  indicator           String?   @db.VarChar(255)
+  created_at          DateTime? @db.Timestamp(6)
+  updated_at          DateTime? @db.Timestamp(6)
+  projects            projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model user_groups {
+  id       Int    @id @default(autoincrement())
+  user_id  Int?
+  group_id Int?
+  users    users? @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+// model user_roles {
+//   role_id Int
+//   user_id Int
+//   roles   roles? @relation(fields: [role_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+//   users   users? @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+//   @@id([user_id, role_id])  // Composite primary key
+// }
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model users {
+  id                 Int               @id @default(autoincrement())
+  nid String?
+  no_telp String?
+  full_name          String               @db.VarChar(255)
+  username           String               @unique(map: "users_username_unique") @db.VarChar(255)
+  email              String               @unique(map: "users_email_unique") @db.VarChar(255)
+  jabatan            String @default("N/A")
+
+  jabatan_id Int?
+  notification_counter Int?
+  nama_instansi String?
+  email_verified_at  DateTime?            @db.Timestamp(0)
+  password           String               @db.VarChar(255)
+  remember_token     String?              @db.VarChar(100)
+  created_at         DateTime?            @db.Timestamp(0)
+  updated_at         DateTime?            @db.Timestamp(0)
+  profile_picture  String?              @db.VarChar(255)
+
+  jabatan_user jabatan? @relation(fields: [jabatan_id], references: [id])
+  issue  issue[]
+  issue_colaborators issue_colaborators[]
+  project_irr        project_irr[]        
+  user_groups        user_groups[]        
+  user_roles         user_roles[]    
+  project_tkdn project_tkdn[]     
+  file file[]
+  project_users project_users[]
+  refresh_token refresh_token[]
+  mom_issues mom_issues[]
+  history_log history_log[]
+  target_plan target_plan[]
+  esg_water_consumption_history esg_water_consumption_history[]
+  esg_energy_consumption_history esg_energy_consumption_history[]
+  esg_energy_reduction_history esg_energy_reduction_history[]
+  esg_waste_generated_produced_history esg_waste_generated_produced_history[]
+  esg_waste_generated_managed_history esg_waste_generated_managed_history[]
+  esg_waste_generated_b_three_history esg_waste_generated_b_three_history[]
+  esg_trees_planted_history esg_trees_planted_history[]
+  esg_community_empowerment_history esg_community_empowerment_history[]
+mom_issues_comments mom_issues_comments[]
+  esg_employee esg_employee[]
+  esg_human_capital esg_human_capital[]
+  esg_employee_v2 esg_employee_v2[]
+  esg_human_rights_report_history esg_human_rights_report_history[]
+  esg_k_three_violation_report_history esg_k_three_violation_report_history[]
+  esg_satisfaction_history esg_satisfaction_history[]
+  esg_governance_risk_compliance_history esg_governance_risk_compliance_history[]
+  esg_money_laundering_report_history esg_money_laundering_report_history[]
+  esg_whistleblowing_cases_history esg_whistleblowing_cases_history[]
+  esg_cyber_security_history esg_cyber_security_history[]
+  folder folder[]
+  approval_project_permissions project_permissions[] @relation("approvalRelation")
+  esg_green_energy_history esg_green_energy_history[]
+  mom_approval mom_approval[] @relation("approval")
+  mom_participant mom_participant[]
+  mom_issues_collaborator mom_issues_collaborator[]
+  mom_issues_tasks mom_issues_tasks[]
+  mom_issues_assigness mom_issues_assigness[]
+  user_notification user_notification[]
+  mom_approval_log mom_approval_log[] @relation("mom_approval_log_creator")
+  mom_issues_updater mom_issues[] @relation("mom_issues_updater")
+
+  mom mom[] @relation(name: "mom_creator")
+  esg_combined_employee esg_combined_employee[]
+  risiko_history risiko_history[]
+  risiko risiko[]
+  irr_on_equity irr_on_equity[]
+  irr_on_equity_history irr_on_equity_history[]
+  group_users_permission_approval group_users_permission[]  @relation(name: "approvalRelation")
+  group_users group_users[]
+  jabatan_users_permission jabatan_users_permission[]  @relation(name: "approvalRelation")
+}
+
+
+model features {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  description         String?
+  created_at          DateTime              @default(now())
+  updated_at          DateTime?             @updatedAt
+  project_permissions project_permissions[]
+  group_users_permission group_users_permission[]
+  jabatan_users_permission jabatan_users_permission[]
+}
+
+model groups {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique @default(uuid())
+  description         String?
+  created_at          DateTime              @default(now())
+  updated_at          DateTime?             @updatedAt
+  group_users_permission group_users_permission[] 
+  group_users group_users[]
+}
+
+
+model group_users_permission {
+    id          Int      @id @default(autoincrement())
+  group_id     Int
+  feature_id  Int
+  action      ACTION
+  approval    Boolean @default(true)
+  approved_by Int?
+  assigned_at DateTime @default(now())
+  feature     features @relation(fields: [feature_id], references: [id])
+  group          groups    @relation(fields: [group_id], references: [id])
+  userApproval  users?    @relation("approvalRelation", fields: [approved_by], references: [id])
+
+  @@unique([group_id, feature_id, action, approval])
+
+  jabatan  jabatan[]
+}
+
+model jabatan {
+  id                  Int                   @id @default(autoincrement())
+  name                String                @unique
+  description         String?
+  created_at          DateTime              @default(now())
+  updated_at          DateTime?             @updatedAt
+  group_users_permission group_users_permission[] 
+  jabatan_users_permission jabatan_users_permission[]
+  users users[]
+}
+
+
+model jabatan_users_permission {
+    id          Int      @id @default(autoincrement())
+  jabatan_id     Int
+  feature_id  Int
+  action      ACTION
+  approval    Boolean @default(true)
+  approved_by Int?
+  assigned_at DateTime @default(now())
+  jabatan     jabatan @relation(fields: [jabatan_id], references: [id])
+  feature     features @relation(fields: [feature_id], references: [id])
+  userApproval  users?    @relation("approvalRelation", fields: [approved_by], references: [id])
+
+  @@unique([jabatan_id, feature_id, action, approval])
+}
+
+model group_users {
+  id          Int      @id @default(autoincrement())
+  user_id     Int?
+  group_id  Int?
+  assigned_at DateTime? @default(now())
+  group        groups?     @relation(fields: [group_id], references: [id])
+  user     users?  @relation(fields: [user_id], references: [id])
+
+  @@unique([group_id, user_id], name: "unique_user_id_group_id")
+
+}
+
+
+
+model project_permissions {
+  id          Int      @id @default(autoincrement())
+  group_id     Int
+  project_id  Int
+  feature_id  Int
+  action      ACTION
+  approval    Boolean @default(true)
+  approved_by Int?
+  assigned_at DateTime @default(now())
+  feature     features @relation(fields: [feature_id], references: [id])
+  project     projects @relation(fields: [project_id], references: [id])
+  userApproval  users?    @relation("approvalRelation", fields: [approved_by], references: [id])
+
+  @@unique([group_id, project_id, feature_id, action, approval])
+}
+
+enum ACTION {
+  READ
+  UPDATE
+  DELETE
+  CREATE
+}
+
+// Tabel Roles
+model roles {
+  id         Int         @id @default(autoincrement())
+  name       String?      @unique @db.VarChar(255) // Contoh: 'superadmin', 'programmer', 'developer', 'admin'
+  created_at DateTime?    @default(now()) @db.Timestamp(0)
+  updated_at DateTime?   @updatedAt @db.Timestamp(0)
+  users      user_roles[]
+  permissions role_permission[]
+}
+
+// Tabel Permissions
+model permissions {
+  id         Int            @id @default(autoincrement())
+  name       String?         @unique @db.VarChar(255) // Contoh: 'create_project', 'delete_project', 'assign_developer'
+  created_at DateTime?       @default(now()) @db.Timestamp(0)
+  updated_at DateTime?       @updatedAt @db.Timestamp(0)
+  roles      role_permission[]
+}
+
+// Pivot: UserRole
+model user_roles {
+  id       Int  @id @default(autoincrement())
+  user     users @relation(fields: [user_id], references: [id])
+  role     roles @relation(fields: [role_id], references: [id])
+  user_id  Int
+  role_id  Int
+  assigned_at DateTime @default(now())
+
+  @@unique([user_id]) // Unik berdasarkan user_id
+}
+
+// Pivot: ProjectUser (Assign user ke project tertentu)
+model project_users {
+  id          Int      @id @default(autoincrement())
+  user_id     Int?
+  project_id  Int?
+  assigned_at DateTime? @default(now())
+  user        users?     @relation(fields: [user_id], references: [id])
+  project     projects?  @relation(fields: [project_id], references: [id])
+
+  @@unique([user_id, project_id], name: "unique_user_id_project_id")
+}
+
+// Pivot: RolePermission
+model role_permission {
+  id           Int      @id @default(autoincrement())
+  role_id      Int?
+  permission_id Int?
+  assigned_at  DateTime? @default(now())
+  role         roles?     @relation(fields: [role_id], references: [id])
+  permission   permissions? @relation(fields: [permission_id], references: [id])
+
+  @@unique([role_id, permission_id])
+}
+
+// Tabel RefreshToken
+model refresh_token {
+  id         Int       @id @default(autoincrement())
+  token      String?    @unique @db.Text
+  user_id    Int?
+  expired_at DateTime?
+  created_at DateTime?  @default(now()) @db.Timestamp(0)
+  updated_at DateTime?  @updatedAt @db.Timestamp(0)
+  user       users?      @relation(fields: [user_id], references: [id])
+}
+
+// Tabel HistoryLog (Untuk mencatat perubahan data)
+model history_log {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  action     String?    @db.VarChar(255) // Contoh: 'CREATE', 'UPDATE', 'DELETE'
+  table_name String?    @db.VarChar(255)
+  record_id  Int?       // ID data yang diubah
+  changes    Json?      // Detail perubahan (jika ada)
+  created_at DateTime?  @default(now()) @db.Timestamp(0)
+  user       users?      @relation(fields: [user_id], references: [id])
+}
+
+
+model waste_management {
+  id               Int       @id @default(autoincrement())
+  project_id       Int?
+  period           String?   @db.VarChar(255)
+  waste_type       String?   @db.VarChar(255)
+  generated_amount Float?
+  unit             String?   @db.VarChar(50)
+  treated_amount   Float?
+  treated_method   String?   @db.VarChar(255)
+  indicator        String?   @db.VarChar(255)
+  created_at       DateTime? @db.Timestamp(6)
+  updated_at       DateTime? @db.Timestamp(6)
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+// unused
+model construction_info {
+  id               Int       @id @default(autoincrement())
+  project_id       Int? @unique
+  // name  Construction_Info_Type?
+  penyediaan_jasa_operation_dan_maintenance Float?
+  penyediaan_jasa_operation_dan_maintenance_date DateTime?
+  penyediaan_energi_primer Float?
+  penyediaan_energi_primer_date DateTime?
+  commercial_operation_date Float?
+  commercial_operation_date_date DateTime?
+  financial_close Float?
+  financial_close_date DateTime?
+  epc_cost_realization Float?
+  epc_cost_realization_date DateTime?
+  total_progress_plan Float?
+  total_actual_plan Float?
+  actual_plan_date DateTime?
+  irr Float?
+  irr_date DateTime?
+  tkdn Float?
+  tkdn_date DateTime?
+
+  created_at       DateTime  @default(now())
+
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum Construction_Info_Type {
+  ACTUAL_PLAN
+  PENYEDIAAN_JASA_OPERATION_DAN_MAINTENANCE
+  PENYEDIAAN_ENERGI_PRIMER
+  COMMERCIAL_OPERATION_DATE
+  FINANCIAL_CLOSE
+  REALISASI_EPC_COST
+}
+
+model actual_plan {
+    id               Int       @id @default(autoincrement())
+    project_id       Int?
+    total_progress_plan Float?
+    total_actual_plan Float?
+    created_at       DateTime  @default(now())
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    actual_plan_date_plan actual_plan_date_plan[]
+}
+
+model actual_plan_date_plan {
+    id               Int       @id @default(autoincrement()) 
+    project_id       Int?
+    duration  Int?
+    start_date        DateTime?
+    finish_date       DateTime?
+    actual_plan_id    Int?
+
+    created_at       DateTime  @default(now())
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    actual_plan      actual_plan? @relation(fields: [actual_plan_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model actual_plan_info_plan {
+    id                    Int       @id @default(autoincrement())
+    project_id            Int?
+    type  typeActualPlan?
+    progress_plan         Float?    
+    progress_actual       Float?   
+    schedule_date         DateTime?  
+    created_at            DateTime @default(now())
+    projects              projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model actual_plan_info_actual {
+    id                    Int       @id @default(autoincrement())
+    project_id            Int?
+    type  typeActualPlan?
+    progress_plan         Float?    
+    progress_actual_calculated       Float?
+    progress_plan_calculated Float?
+    progress_actual       Float?    
+    weight Float?
+    schedule_date         DateTime?  
+    created_at            DateTime @default(now())
+    projects              projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    actual_plan_procurement actual_plan_procurement[]
+}
+
+model actual_plan_procurement {
+    id                    Int       @id @default(autoincrement())
+    item String?
+    plan_start DateTime?
+    plan_finish DateTime?
+    actual_start DateTime?
+    actual_finish DateTime?
+    progress Float?
+    remark String?
+    created_at            DateTime @default(now())
+    actual_plan_info_actual_id Int?
+    actual_plan actual_plan_info_actual? @relation(fields: [actual_plan_info_actual_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum typeActualPlan {
+  ENGINEERING
+  PROCUREMENT
+  CONSTRUCTION
+  TESTCOMISSION
+}
+
+model penyediaan_energy_primer {
+  id               Int       @id @default(autoincrement())
+  project_id       Int?
+  total_progress  Float?
+  reported_date DateTime?
+  created_at       DateTime @default(now())
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_energy_primer {
+    id               Int       @id @default(autoincrement())
+    type  TahapanProsesEnergiPrimer?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum TahapanProsesEnergiPrimer {
+  PENYUSUNAN_RFP
+  PENGUMUMAN_TENDER
+  PEMASUKKAN_DOKUMEN_PENAWARAN
+  EVALUASI_TEKNIS_DAN_KOMERSIAL
+  PENETAPAN_PENYEDIA_ENERGI_PRIMER
+  TANDATANGAN_KONTRAK_ENERGI_PRIMER
+}
+
+model penyedia_jasa_operation_dan_maintenance {
+  id               Int       @id @default(autoincrement())
+  
+  project_id       Int?
+  total_progress  Float?
+  reported_date DateTime?
+  created_at       DateTime @default(now())
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_jasa_operation_dan_maintenance {
+    id               Int       @id @default(autoincrement())
+        title String?
+    type  TahapanProsesOandM?
+    target_date DateTime?
+    actual_date DateTime?
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum TahapanProsesOandM {
+  PENYUSUNAN_RFP                     // Penyusunan RFP
+  PENGUMUMAN_TENDER                  // Pengumuman Tender
+  PEMASUKKAN_DOKUMEN_PENAWARAN       // Pemasukkan Dokumen Penawaran
+  EVALUASI_TEKNIS_DAN_KOMERSIAL      // Evaluasi Teknis dan Komersial
+  PENETAPAN_PENYEDIA_OM              // Penetapan Penyedia O&M
+  TANDATANGAN_KONTRAK_OM             // Tandatangan Kontrak O&M
+}
+
+
+model commercial_operation_date {
+  id               Int       @id @default(autoincrement())
+  project_id       Int?
+  total_progress  Float?
+  reported_date DateTime?
+  created_at       DateTime @default(now())
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_commercial_operation_date {
+    id               Int       @id @default(autoincrement())
+    title String?
+    type  TahapanCommissioning?
+    target_date DateTime?
+    actual_date DateTime?
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum TahapanCommissioning {
+  INDIVIDUAL_TEST
+  COMMISSIONING                      // Commissioning
+  REKOMENDASI_LAIK_BERTEGANGAN       // Rekomendasi Laik Bertegangan
+  REKOMENDASI_LAIK_SINKRON          // Rekomendasi Laik Sinkron
+  PEMBUATAN_NIDI                     // Pembuatan NIDI
+  DOKUMEN_SLO                        // Dokumen SLO
+  SERTIFIKAT_COD                     // Sertifikat COD
+}
+
+model financial_close {
+  id               Int       @id @default(autoincrement())
+  project_id       Int?
+  total_progress  Float?
+  reported_date DateTime?
+  created_at       DateTime @default(now())
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_financial_close {
+      id               Int       @id @default(autoincrement())
+    title String?
+    type  TahapanFinancialClose?
+    target_date DateTime?
+    actual_date DateTime?
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum TahapanFinancialClose {
+  PEMENUHAN_TIMELINE_FINANCIAL_CLOSE
+  INITIAL_DRAWDOWN
+}
+
+model epc_cost_realization {
+    id                      Int       @id @default(autoincrement())
+    project_id              Int?
+    project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+    created_at             DateTime?  @default(now())
+    updated_at             DateTime?  @updatedAt      
+    epc_cost_realization_detail epc_cost_realization_detail[]
+}
+
+model epc_cost_realization_detail {
+  id                      Int       @id @default(autoincrement())
+  project_id              Int?
+  year                    Int?       
+  month                   Int?       
+  planned_payment         Float?     @default(0) 
+  realized_payment       Float?     @default(0) 
+  remaining_payment      Float?     @default(0) 
+  payment_progress       Float?     @default(0)
+  physical_progress      Float?     @default(0) 
+  total_realized_payment Float?     @default(0) 
+  total_remaining_payment Float?     @default(0) 
+  created_at             DateTime?  @default(now()) 
+  updated_at             DateTime?  @updatedAt     
+
+  epc_cost_realization_id Int?
+  epc_cost_realization epc_cost_realization? @relation(fields: [epc_cost_realization_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model epc_cost_realization_detail_json {
+  id          Int       @id @default(autoincrement())
+  project_id  Int?
+  year        Int
+  month       Int
+  data        Json
+
+
+    created_at             DateTime?  @default(now()) 
+  updated_at             DateTime?  @updatedAt   
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+
+
+  @@unique([project_id, year, month])
+}
+
+
+
+
+
+model esg_environment {
+  id                      Int     @id @default(autoincrement())
+  energy_consumption      Float?
+  energy_reduction        Float?
+  water_consumption       Float?
+  waste_generated         Float?
+  number_of_planted_trees_mangroove Int?
+  number_of_planted_trees_other Int?
+  mangrove_trees          Int?
+  other_trees             Int?
+  green_energy_production Float?
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model esg_social {
+  id                            Int     @id @default(autoincrement())
+  community_development         Int?     // dalam satuan rupiah
+  diversity_inclusion           Float?   // dalam persen
+  human_capital_development_hrs Int?
+  human_rights_policy           Boolean? // true jika ada kebijakan
+  human_rights_policy_date      DateTime?
+  health_and_safety_hours       Int?
+  zero_accidents                Boolean?
+  customer_satisfaction_index   Float?
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_governance {
+  id                          Int     @id @default(autoincrement())
+  governance_actions          Int?
+  money_laundering_policy     Boolean? // true jika ada kebijakan
+  money_laundering_policy_date DateTime?
+  whistleblowing_reports       Int?
+  whistleblowing_resolved      Int?
+  responsible_investment       Boolean?
+  cyber_security_cases         Int?
+  cyber_security_resolved      Boolean?
+  esg_commitments              Int?
+
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model shadow_rating {
+  id                         Int     @id @default(autoincrement())
+  company_exposure           Float?   // Eksposur Perusahaan
+  manageable_risk            Float?   // Risiko yang Dapat Dikelola
+  managed_risk               Float?   // Risiko Terkelola
+  management_gap             Float?   // Kesenjangan Manajemen
+  unmanageable_risk          Float?   // Risiko yang Tidak Dapat Dikelola
+  unmanaged_risk_total       Float?   // Total Risiko yang Belum Terkelola
+  created_at                 DateTime? @default(now())
+  updated_at                 DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model energy_usage {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  energy_source         energy_usage_source?   // Sumber energi (contoh: "Terbarukan" atau "Tidak Terbarukan")
+  electricity_kwh       Float?    // Listrik dalam kWh
+  fuel_liters           Float?    // Bensin dalam liter
+  distance_km           Float?    // Jarak tempuh dalam kilometer
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum energy_usage_source {
+  TERBARUKAN
+  TIDAK_TERBARUKAN
+}
+
+model energy_usage_air {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  minum_kemasan         Float?  
+  operational           Float?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model waste_produced {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  organic               Float?  
+  anorganic               Float?
+  b_three                 Float?
+  can_or_iron           Float?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model waste_managed {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  organic               Float?  
+  anorganic               Float?
+  b_three                 Float?
+  can_or_iron           Float?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model waste_B3 {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  type type_waste_b3?
+  total                 Float?
+  terkelola             Float?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum type_waste_b3 {
+  BATERAI
+  BOHLAM
+  TONER
+  OTHER
+}
+
+model tree_planting {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  mangrove              Float?
+  other                 Float?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model green_energy_production {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  plts_cirata           Float?
+  plts_ikn              Float?
+  plts_tembesi          Float?
+  plts_karangkates      Float?
+  plts_batang_toru      Float?
+  pltb_tanah_laut       Float?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  // project_id             Int?
+  // project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model community_empowerment {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  type type_community_empowerment?
+  realisasi             Float?
+  beneficiary           Float?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+
+model employee {
+  id                 Int      @id @default(autoincrement())
+  name               String?
+  position           String?
+  education          String?
+  birth_date         DateTime?
+  gender             type_gender?
+  years_of_service   DateTime?
+
+  project_id         Int?
+  project            projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  employee_trainings employee_training[]
+}
+
+enum type_gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+model training {
+  id                 Int      @id @default(autoincrement())
+  training_name      String?
+
+  employee_trainings employee_training[]
+}
+
+model employee_training {
+  id           Int  @id @default(autoincrement())
+  employee_id  Int?
+  training_id  Int?
+
+  employee     employee? @relation(fields: [employee_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  training     training? @relation(fields: [training_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@unique([employee_id, training_id])
+}
+
+model human_rights_overview {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  total_case             Int?
+  case_in_process           Int?
+  finished_case           Int?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model human_rights_attachment {
+  id                    Int      @id @default(autoincrement())
+  attachment_link       String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model human_rights_case {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  title                 String?
+  severity              String?
+  details               String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model occupational_health_and_safety {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  safe_man_hour         String?
+  incident              String?
+  details               String?
+  follow_up             String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model occupational_health_and_safety_attachment {
+  id                    Int      @id @default(autoincrement())
+  attachment_link       String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model customer_satisfaction_survey_index {
+    id        Int      @id @default(autoincrement())
+    year                  Int?      // Tahun, misalnya 2024
+    instruction           String?
+    follow_up             String?
+    value                 Int?
+    created_at            DateTime? @default(now())
+    updated_at            DateTime? @updatedAt
+
+    project_id             Int?
+    project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model governance_risk_compliance {
+    id        Int      @id @default(autoincrement())
+    year                  Int?      // Tahun, misalnya 2024
+    instruction           String?
+    follow_up             String?
+    value                 Int?
+    created_at            DateTime? @default(now())
+    updated_at            DateTime? @updatedAt 
+
+    project_id             Int?
+    project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model money_laundering_policy {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  safe_man_hour         String?
+  incident              String?
+  details               String?
+  follow_up             String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model money_laundering_policy_attachment {
+  id                    Int      @id @default(autoincrement())
+  attachment_link       String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model whistleblowing_system {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  total_reports         Int?
+  follow_up             String?
+  finished_report       String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model whistleblowing_system_attachment {
+  id                    Int      @id @default(autoincrement())
+  attachment_link       String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model cyber_security {
+  id                    Int      @id @default(autoincrement())
+  year                  Int?      // Tahun, misalnya 2024
+  period                String?   // Periode (contoh: "Januari - Maret", "April - Juni")
+  case                  String?
+  follow_up             String?
+  finished_report       String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model cyber_security_attachment {
+  id                    Int      @id @default(autoincrement())
+  attachment_link       String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_performance_targets_pact {
+  id                    Int      @id @default(autoincrement())
+  attachment_link       String?
+  created_at            DateTime? @default(now())
+  updated_at            DateTime? @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model folder {
+  id          Int       @id @default(autoincrement())
+  name        String
+  path        String?
+  owner_id    Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  projectId   Int?
+  is_trash Boolean?
+  comment     String?
+  parentId    Int?     @default(0)
+  is_root     Boolean  @default(false)
+  parent      folder?   @relation("FolderHierarchy", fields: [parentId], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+  children    folder[]  @relation("FolderHierarchy")
+  files       file[]
+
+
+  @@unique([name, projectId])
+  project     projects?  @relation(fields: [projectId], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+  user     users?  @relation(fields: [owner_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+
+
+model file {
+  id          String   @id @default(uuid()) 
+  file_name   String?
+  name        String?
+  folder_id    Int?   @default(0)
+  uploaded_by Int?
+  path        String?
+  size        Int?       
+  type        String?  
+  download String? 
+  title String?
+  nomor String?
+  tahun String?
+  tgl_penetapan DateTime?
+  tgl_berlaku DateTime?
+  is_trash Boolean @default(false)
+  index_text String?
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  folder      folder?    @relation(fields: [folder_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+  pemrakarsa      users?    @relation(fields: [uploaded_by], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+
+  by_revoke by_revoke[]
+  by_modify by_modify[]
+
+
+  revoke revoke[]
+  modify modify[]
+  establish establish[]
+
+  file_impacter relation[] @relation("file_impacter")
+  file_impacted relation[] @relation("file_impacted")
+}
+
+model relation {
+  id Int @id @default(autoincrement())
+  impacter_file_id String
+  impacted_file_id String
+  type String
+  reason String?
+
+  impacter file @relation(fields: [impacter_file_id], references: [id], onDelete: Cascade, onUpdate: Cascade, name: "file_impacter")
+  impacted file @relation(fields: [impacted_file_id], references: [id], onDelete: Cascade, onUpdate: Cascade, name: "file_impacted")
+}
+
+
+model by_revoke {
+  id          Int       @id @default(autoincrement())
+  title       String?   
+  reason    String?
+  file_id   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  target_file_id String?
+
+  file      file?    @relation(fields: [file_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model by_modify {
+  id          Int       @id @default(autoincrement())
+  title       String?   
+  reason    String?
+  file_id   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  target_file_id String?
+
+
+  file      file?    @relation(fields: [file_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model revoke {
+  id          Int       @id @default(autoincrement())
+  title       String?   
+  reason    String?
+  file_id   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  target_file_id String?
+
+
+  file      file?    @relation(fields: [file_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model modify {
+  id          Int       @id @default(autoincrement())
+  title       String?   
+  reason    String?
+  file_id   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  target_file_id String?
+
+  file      file?    @relation(fields: [file_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model establish {
+  id          Int       @id @default(autoincrement())
+  title       String?   
+  reason    String?
+  file_id   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  target_file_id String?
+
+  file      file?    @relation(fields: [file_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+
+model realization {
+  id          Int       @id @default(autoincrement())
+  plant_availabillity Float?
+  performance_ratio Float?
+  productivity_rate Float?
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project_id             Int? @unique
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model realization_history {
+  id          Int       @id @default(autoincrement())
+  metrics type_realization?
+  value Float?
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  project_id             Int?
+  project                projects?  @relation(fields: [project_id], references: [id] , onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum type_realization {
+  PLANT_AVAILABILLITY
+  PERFORMANCE_RATIO
+  PRODUCTIVITY_RATE
+}
+
+
+enum Metric {
+  EKS_POSUR_PERUSAHAAN
+  RISIKO_YANG_DAPAT_DIKELOLA
+  RISIKO_TERKELOLA
+  KESENJANGAN_MANAJEMEN
+  RISIKO_YANG_TIDAK_DAPAT_DIKELOLA
+  TOTAL_RISIKO_YANG_BELUM_TERKELOLA
+}
+
+model esg_summary {
+  id                                Int      @id @default(autoincrement())
+  project_id                        Int     
+  year                              Int
+  energy_consumption                Float?
+  energy_reduction                  String?
+  water_consumption                 String?
+  waste_generated                   String?
+  green_energy_production           String?
+  trees_planted_mangrove            Int?
+  trees_planted_other               Int?
+  community_development             String?
+  employee_statistics_equality      String?
+  human_capital_development         String?
+  human_rights_reports              String?
+  health_and_safety String?
+  health_and_safety_training_hours  String?
+  health_and_safety_accidents       String?
+  customer_satisfaction             String?
+  governance_risk_compliance        String?
+  money_laundering_policies         String?
+  whistleblowing_cases              String?
+  cyber_security                    String?
+  esg_commitments                   String?
+  updated_at                        DateTime @updatedAt
+  summary String?
+  attachment_photo String?
+  esg_ratings String?
+
+  @@unique([project_id, year])
+}
+
+
+model esg_shadow_rating {
+  id             Int      @id @default(autoincrement())
+  metric         Metric
+  value          Float?
+  description    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  year          Int?
+  project_id    Int?    
+
+  projects      projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    @@unique([project_id, year, metric])
+}
+
+model esg_shadow_rating_info {
+  id             Int      @id @default(autoincrement())
+  description    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  year           Int?
+  project_id     Int?    
+
+  projects      projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  @@unique([project_id, year])
+}
+
+
+
+model esg_energy_consumption {
+  id            Int      @id @default(autoincrement())
+  project_id    Int?    
+  period        String?
+  year          Int?
+  renewable     Float?
+  non_renewable Float?
+  fuel Float?
+    created_at DateTime @default(now())
+
+  projects      projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+
+  @@index([project_id, period, year], name: "index_project_period_year_energy_consumption")  
+}
+
+
+model esg_energy_consumption_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int?    
+  period    String?
+  year      Int?
+  renewable Float?
+  non_renewable Float?
+  fuel     Float?
+  addedby_id Int?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+
+model esg_energy_reduction {
+  id        Int      @id @default(autoincrement())
+  project_id Int?    
+  period    String?
+  year      Int?
+  renewable Float?
+  non_renewable Float?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_energy_reduction")  
+}
+
+model esg_energy_reduction_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int?    
+  period    String?
+  year      Int?
+  renewable Float?
+  addedby_id Int?
+  non_renewable Float?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+
+model esg_energy_consumption_total {
+  id        Int      @id @default(autoincrement())
+  project_id Int?    
+  year      Int?
+  total_electricity Int?
+  total_fuel Int?
+  total_distance Int?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_energy_reduction_total {
+  id        Int      @id @default(autoincrement())
+  project_id Int?    
+  year      Int?
+  total_electricity Int?
+  total_fuel Int?
+  total_distance Int?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model esg_water_consumption {
+  id        Int      @id @default(autoincrement())
+  project_id Int?    
+  period    String?
+  year      Int?
+  kemasan Float?
+  operational Float?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_water_consumption")  
+}
+
+model esg_water_consumption_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int?    
+  period    String?
+  year      Int?
+  kemasan Float?
+  operational Float?
+  addedby_id Int?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+
+model esg_water_total {
+  id        Int      @id @default(autoincrement())
+  project_id Int?    
+  year      Int?
+  total_air_kemasan Int?
+  total_air_produksi Int?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model esg_waste_generated_produced {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  organic Float?
+  anorganic Float?
+  b_three  Float?
+  other Float?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_waste_generated")  
+}
+
+model esg_waste_generated_produced_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  organic Float?
+  anorganic Float?
+  b_three  Float?
+  other Float?
+  addedby_id Int?
+    created_at DateTime @default(now())
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+ 
+}
+
+
+model esg_waste_generated_managed {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  organic Float?
+  anorganic Float?
+  b_three  Float?
+  other Float?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_waste_managed")  
+}
+
+model esg_waste_generated_managed_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  organic Float?
+  anorganic Float?
+  b_three  Float?
+  other Float?
+    created_at DateTime @default(now())
+
+  addedby_id Int?
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model esg_waste_generated_b_three {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  organic Float?
+  anorganic Float?
+  b_three  Float?
+  other Float?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_waste_three") 
+}
+
+model esg_waste_generated_b_three_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  organic Float?
+  anorganic Float?
+  b_three  Float?
+  other Float?
+  addedby_id Int?
+    created_at DateTime @default(now())
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_green_energy {
+    id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  plts_cirata Float?
+  plts_ikn Float?
+  plts_tembesi  Float?
+  plts_karangkates Float?
+  plta_batang_toroe  Float?
+  pltb_tanah_laut Float?
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_green_energy") 
+}
+
+model esg_green_energy_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  plts_cirata Float?
+  plts_ikn Float?
+  plts_tembesi  Float?
+  plts_karangkates Float?
+  plta_batang_toroe  Float?
+  pltb_tanah_laut Float?
+  created_at DateTime @default(now())
+
+    addedby_id Int?
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+model esg_trees_planted {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  mangrove Float?
+  other Float?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_trees_planted") 
+}
+
+model esg_trees_planted_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  mangrove Float?
+  other Float?
+  addedby_id Int?
+    created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+
+model esg_community_empowerment {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  category type_community_empowerment?
+  realization Float?
+  beneficiary Int?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+@@unique([project_id, year, period, category], name: "project_id_year_period_category")
+}
+
+model esg_community_empowerment_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  category type_community_empowerment?
+  realization Float?
+  beneficiary Int?
+    created_at DateTime @default(now())
+
+  addedby_id Int?
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+enum type_community_empowerment {
+ SOCIAL
+ LINGKUNGAN
+ EKONOMI
+ TIDAK_BERKELANJUTAN
+ OTHER
+}
+
+
+model esg_employee {
+  id                 Int      @id @default(autoincrement())
+
+  //Controller 1
+  employee_total_male               Int?
+  employee_total_female              Int?
+
+  //controller 2
+  employee_total_male_f               Int?
+  employee_total_male_md               Int?
+  employee_total_male_mm               Int?
+  employee_total_female_f               Int?
+  employee_total_female_md               Int?
+  employee_total_female_mm               Int?
+
+  //controller 3  
+  employee_total_male_strata_one               Int?
+  employee_total_male_strata_two               Int?
+  employee_total_female_strata_one               Int?
+  employee_total_female_strata_two               Int? 
+
+  //controller 4 
+  average_age Int?
+  average_work_service_year Int?
+
+  year Int?
+
+  project_id         Int?
+  project            projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  addedby_id Int?
+    created_at DateTime @default(now())
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model esg_employee_v2 {
+  id                 Int      @id @default(autoincrement())
+
+  nama               String?
+  jenis_kelamin       String?
+  tanggal_lahir       DateTime?
+  tanggal_mulai_bekerja DateTime?
+  lama_bekerja        Int?
+  level              String?
+  status             String?
+  tingkat_pendidikan  String?
+  usia               Int?
+  kelompok_usia       String?
+
+  year Int?
+
+  project_id         Int?
+  project            projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  addedby_id Int?
+  created_at DateTime @default(now())
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model esg_human_capital {
+  id                  Int      @id @default(autoincrement())
+  year Int?
+  nama                String?
+  jabatan             String?
+  jenis_kelamin        String?
+  level_jabatan        String?
+  nama_pelatihan       String?
+  penyelenggara       String?
+  tanggal             DateTime?
+  durasi_jam           Int?
+  jenis_pelatihan      String?   
+  project_id         Int?
+  project            projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  addedby_id Int?
+  created_at DateTime @default(now())
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+
+model esg_combined_employee {
+  id                        Int       @id @default(autoincrement())
+  nama                      String    // Name of the employee (capitalized)
+  jenis_kelamin             String    // Gender
+  tanggal_lahir             DateTime @default(now()) // Birthdate
+  tanggal_mulai_bekerja    DateTime? // Start date of employment (from `esg_employee_v2`)
+  lama_bekerja              Int?      // Years of employment (from `esg_employee_v2`)
+  level                     String?   // Level of the employee (from `esg_employee_v2`)
+  status                    String?   // Employment status (from `esg_employee_v2`)
+  tingkat_pendidikan        String?   // Education level (from `esg_employee_v2`)
+  usia                      Int?      // Age of the employee (from `esg_employee_v2`)
+  kelompok_usia             String?   // Age group (from `esg_employee_v2`)
+  jabatan                   String?   // Job title (from `esg_human_capital`)
+  level_jabatan             String?   // Job position level (from `esg_human_capital`)
+  nama_pelatihan            String?   // Training name (from `esg_human_capital`)
+  penyelenggara             String?   // Training organizer (from `esg_human_capital`)
+  tanggal                   DateTime? // Training date (from `esg_human_capital`)
+  durasi_jam                Int?      // Duration of training in hours (from `esg_human_capital`)
+  jenis_pelatihan           String?   // Type of training (from `esg_human_capital`)
+  project_id                Int?       // Project ID (used in both tables)
+  year                      Int?      // Year of record (used in both tables)
+  
+  // Relations
+  project                   projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  created_at                DateTime  @default(now())
+  addedby_id                Int?
+  users                     users?    @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  
+  @@index([nama, tanggal_lahir]) // Add an index for quick lookups based on name and birthdate
+}
+
+
+enum esg_type_gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+
+model esg_human_rights_report {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_human_rights_report") 
+}
+
+model esg_human_rights_report_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  addedby_id Int?
+    created_at DateTime @default(now())
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_human_rights_report_attachment {
+  id          String   @id @default(uuid()) 
+  project_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model esg_k_three_violation_report {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+      created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_k_three_violations_report") 
+}
+
+model esg_k_three_violation_report_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+      created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  addedby_id Int?
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_k_three_violation_report_attachment {
+  id          String   @id @default(uuid()) 
+  project_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  year Int?
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_satisfaction_ins_follow {
+    id        Int      @id @default(autoincrement())
+    project_id Int? 
+    score Float?
+    instructions Float? 
+    follow_up Float?
+    year Int?
+
+    created_at DateTime @default(now())
+    projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    @@unique([project_id, year], name: "unique_project_period_year") 
+}
+
+model esg_satisfaction {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period String?
+  year      Int?
+  score Float?
+  instructions String? 
+  follow_up String?
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_satisfaction_report") 
+}
+
+model esg_satisfaction_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period String?
+  year      Int?
+  score Float?
+  instructions String? 
+  follow_up String?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull) 
+
+    created_at DateTime @default(now())
+
+  addedby_id Int?
+
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_governance_risk_compliance_ins_follow {
+    id        Int      @id @default(autoincrement())
+    project_id Int? 
+    instructions Float? 
+    follow_up Float?
+    score     Float?
+    year Int?
+
+    created_at DateTime @default(now())
+    projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    @@unique([project_id, year], name: "unique_project_period_year") 
+}
+
+model esg_governance_risk_compliance_ins_follow_v_two {
+    id        Int      @id @default(autoincrement())
+    project_id Int? 
+    category  String? 
+    period String?
+    total Float?
+    year Int?
+
+    created_at DateTime @default(now())
+    projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    @@unique([project_id, year, period, category], name: "unique_project_period_year_v_two") 
+}
+
+
+model esg_governance_risk_compliance {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period String?
+  year      Int?
+  score     Float?
+  instructions String? 
+  follow_up String?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_governance_risk_report") 
+}
+
+model esg_governance_risk_compliance_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period String?
+  year      Int?
+  score     Float?
+  instructions String? 
+  follow_up String?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+
+  addedby_id Int?
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model esg_money_laundering_report {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_money_laundering_report") 
+}
+
+model esg_money_laundering_report_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+  addedby_id Int?
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model esg_money_laundering_report_attachment {
+  id          String   @id @default(uuid()) 
+  project_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  year Int?
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_whistleblowing_cases {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_whistleblowing_report")
+}
+
+model esg_whistleblowing_cases_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+  addedby_id Int?
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_whistleblowing_attachment {
+  id          String   @id @default(uuid()) 
+  project_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+
+model esg_cyber_security {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+  @@unique([project_id, period, year], name: "unique_project_period_year") 
+  @@index([project_id, period, year], name: "index_project_period_year_cyber_security_report")
+}
+
+
+model esg_cyber_security_history {
+  id        Int      @id @default(autoincrement())
+  project_id Int? 
+  period    String?   
+  year      Int?
+  total_case Int?
+  processed_case Int? 
+  finished_case Int?
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    created_at DateTime @default(now())
+
+  addedby_id Int?
+  users users?  @relation(fields: [addedby_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_cyber_security_attachment {
+  id          String   @id @default(uuid()) 
+  project_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_performance {
+  id          String   @id @default(uuid()) 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  project_id Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  projetct     projects?  @relation(fields: [project_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_performance_history {
+  id          String   @id @default(uuid()) 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  project_id Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  projetct     projects?  @relation(fields: [project_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_performance_attachment_direksi {
+  id          String   @id @default(uuid()) 
+  project_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?  
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_performance_attachment_komisaris {
+  id          String   @id @default(uuid()) 
+  project_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?  
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model esg_performance_attachment_manajement {
+  id          String   @id @default(uuid()) 
+  project_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?  
+  created_at DateTime @default(now())
+
+  projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model dashboard_overview {
+    id        Int      @id @default(autoincrement())
+    total_nilai_investasi Int? 
+    totat_kapasitas_pembangkit Int?
+    total_produksi_listrik Int?
+    daya_aktif Int?
+    esg_risk Int?
+    coal_saved Int?
+    co2_reduced Int?
+    trees_planted_equivalent Int?
+    project_id Int? 
+    projects projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+    
+}
+
+model scrap_data_jawa_7 {
+    id        Int      @id @default(autoincrement())
+    kwhout_1013101 Float?
+    kwhout_1013102 Float?
+    mw_1013101 Float?
+    mw_1013102 Float?
+    created_at DateTime @default(now())
+    kwh_out Float?
+    mw_out Float?
+}
+
+model scrap_data_jawa {
+    id        Int      @id @default(autoincrement())
+    kwhout_1013101 Float @default(0)
+    kwhout_1013102 Float @default(0)
+    mw_1013101 Float @default(0)
+    mw_1013102 Float  @default(0)
+    created_at DateTime @default(now())
+}
+
+
+model scrap_data_cirata {
+  id               Int     @id @default(autoincrement())
+  trafo1kwhout     Float   @default(0)
+  trafo2kwhout     Float   @default(0)
+  trafo1mw         Float   @default(0)
+  trafo2mw         Float   @default(0)
+  mwkumulatif      Float   @default(0)
+  kwhoutkumulatif  Float   @default(0)
+  created_at        DateTime @default(now())
+  kwh_out Float?
+  mw_out Float?
+}
+
+
+model dashboard_summary {
+  id                                Int      @id @default(autoincrement())
+  total_investment                  Decimal? @db.Decimal(20, 2)
+  total_capacity_actual             Float?
+  total_equivalent_co2_reduction    Float?
+  total_saving_coal                 Float?
+  total_trees_planted_equal      Int?
+  esg_rating                Float?
+  total_electricity_production      Float?  
+  total_electricity_active_power_production_created_at DateTime?
+  total_active_power                Float?  
+  updated_at                        DateTime @default(now()) @updatedAt
+      created_at DateTime @default(now())
+
+}
+
+model ProfilRisiko {
+  id       Int       @id @default(autoincrement()) 
+  tahun    Int       @unique
+  sections Section[] 
+      created_at DateTime @default(now())
+
+}
+
+model Section {
+  id             Int          @id @default(autoincrement()) // ID unik untuk setiap section
+  title          String       // Judul section utama
+  profilRisikoId Int?          // Foreign key ke ProfilRisiko
+  profilRisiko   ProfilRisiko? @relation(fields: [profilRisikoId], references: [id], onDelete: SetNull)
+  subtitles      Subtitle[]   // Relasi ke model Subtitle (1 ke banyak)
+      created_at DateTime @default(now())
+
+}
+
+model Subtitle {
+  id         Int     @id @default(autoincrement()) // ID unik untuk setiap subtitle
+  title      String  // Judul sub-section
+  sectionId  Int?     // Foreign key ke Section
+  section    Section? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  created_at DateTime @default(now())
+
+
+  Subtitle_Details Subtitle_Details[]
+}
+
+model Subtitle_Details {
+  id         Int     @id @default(autoincrement()) // ID unik untuk setiap subtitle
+  title      String  // Judul sub-section
+  target     Float?  // Target capaian (opsional)
+  bobot      Float?  // Bobot capaian (opsional)
+  nilai      Float?  // Nilai capaian (opsional)
+  subtitleId  Int?     // Foreign key ke Section
+  subtitle    Subtitle? @relation(fields: [subtitleId], references: [id], onDelete: SetNull)
+  created_at DateTime @default(now())
+}
+
+
+enum MomStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  RETURNED
+  RESUBMIT
+}
+
+model mom {
+  id                   Int   @id @default(autoincrement()) 
+  meeting             String?
+  date                DateTime?       
+  contents            String?    
+  priority           String?
+  project_id         Int? 
+  status             MomStatus @default(DRAFT) 
+  summary            String?
+  non_user_participant String[]
+
+  createdAt          DateTime  @default(now())
+  created_by         Int? 
+  updatedAt          DateTime  @updatedAt
+
+  project           projects?  @relation(fields: [project_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+  creator           users?  @relation(fields: [created_by], references: [id]  , onDelete: SetNull, onUpdate: SetNull, name: "mom_creator")
+  participants Int[]
+
+  mom_temp_notification mom_temp_notification[]
+  mom_issue_temp_notification mom_issue_temp_notification[]
+  mom_issues        mom_issues[]
+  mom_approval      mom_approval[]
+  mom_participant   mom_participant[]
+  mom_attachment    mom_attachment[]
+  mom_key_indicator mom_key_indicator[]
+}
+
+
+model mom_key_indicator {
+    id                   Int   @id @default(autoincrement()) 
+    irr                 Float @default(0)
+    project_cost      Float  @default(0)
+    der       Float @default(0)
+    share Float @default(0)
+    mom_id           Int @unique
+    project_id         Int?
+    createdAt          DateTime  @default(now())
+    updatedAt          DateTime  @updatedAt
+    mom              mom?  @relation(fields: [mom_id], references: [id]  , onDelete: Cascade, onUpdate: Cascade)
+    project           projects?  @relation(fields: [project_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+}
+model mom_temp_notification {
+  id                Int   @id @default(autoincrement()) 
+  mom_id            Int?  
+  participants       Int[]
+  approvers  Int[]
+  is_sent Boolean? @default(false)
+
+  mom              mom?  @relation(fields: [mom_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+@@unique([mom_id])
+}
+
+model mom_issue_temp_notification {
+  id                Int   @id @default(autoincrement()) 
+  mom_issue_id            Int?  
+  mom_id            Int?
+  assignees       Int[]
+  is_sent Boolean? @default(false)
+
+  mom_issue              mom_issues?  @relation(fields: [mom_issue_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+  mom              mom?  @relation(fields: [mom_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model mom_approval_log {
+  id                Int   @id @default(autoincrement()) 
+  mom_id            Int?  
+  creator_id        Int?
+  comment   String?
+  approval_status   approval_status_log @default(OPEN)
+  created_at DateTime @default(now())
+
+  users users?  @relation(fields: [creator_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull, name: "mom_approval_log_creator")
+}
+
+enum approval_status_log {
+  APPROVED
+  ACCEPTED
+  REJECT
+  RETURN
+  OPEN
+  SUBMITTED
+  RESUBMIT
+}
+
+enum approval_status {
+  PENDING
+  REJECT
+  RETURN
+  ACCEPTED
+  SUBMITTED
+}
+
+model mom_approval {
+  id                Int   @id @default(autoincrement()) 
+  mom_id            Int?  
+  approval_status   approval_status @default(PENDING)
+  approver_id       Int? 
+  approval_step     Int?    
+  comments         String?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  approval         users?  @relation(fields: [approver_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull, name: "approval")
+
+  mom              mom?  @relation(fields: [mom_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+
+  @@index([mom_id, approver_id])
+  @@unique([mom_id, approver_id]) 
+  @@unique([mom_id, approver_id, approval_step]) 
+}
+
+
+model mom_participant {
+   id               Int   @id @default(autoincrement()) 
+   user_id          Int?
+   mom_id           Int? 
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+   participant      users?  @relation(fields: [user_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+   mom              mom?  @relation(fields: [mom_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model mom_attachment {
+  id          String   @id @default(uuid()) 
+  mom_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  link       String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  mom mom?  @relation(fields: [mom_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model mom_issues {
+  id               Int   @id @default(autoincrement()) 
+  mom_id           Int?
+  issue           String?
+  assignee_id          Int?
+  deadline_date    DateTime?       
+  
+  contents         String?
+  project_id       Int? 
+  summary String?   
+  
+  follow_up        String?
+
+  priority         priority?
+  status           status?
+    label_one String?
+  label_two String?
+  label_three String?
+  created_by       Int?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  updatedBy      Int?
+  updater users?  @relation(fields: [updatedBy], references: [id]  , onDelete: SetNull, onUpdate: SetNull, name: "mom_issues_updater")
+  project          projects?  @relation(fields: [project_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+  mom              mom?  @relation(fields: [mom_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+  assignees Json[]
+  collaborators Json[]
+
+  creator              users?  @relation(fields: [created_by], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+  mom_issues_collaborator mom_issues_collaborator[]
+  mom_issues_assigness mom_issues_assigness[]
+  mom_issues_tasks mom_issues_tasks[]
+  mom_issue_attachment mom_issue_attachment[]
+  mom_issues_comments mom_issues_comments[]
+  mom_activities  mom_activities[]
+  mom_issue_temp_notification mom_issue_temp_notification[]
+}
+
+model mom_issues_collaborator {
+    id               Int   @id @default(autoincrement()) 
+    mom_issue_id     Int?
+  
+    createdAt         DateTime  @default(now())
+    updatedAt         DateTime  @updatedAt
+    collaborator      users?  @relation(fields: [collaborator_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+
+
+    collaborator_id  Int?
+    mom_issue     mom_issues?  @relation(fields: [mom_issue_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+    
+    @@unique([collaborator_id, mom_issue_id])  // Indeks gabungan unik
+}
+
+
+model mom_issues_assigness {
+    id               Int   @id @default(autoincrement()) 
+    mom_issue_id     Int?
+  
+    createdAt         DateTime  @default(now())
+    updatedAt         DateTime  @updatedAt
+    assigness      users?  @relation(fields: [assignee_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+
+
+    assignee_id  Int?
+    mom_issue     mom_issues?  @relation(fields: [mom_issue_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+    
+    @@unique([assignee_id, mom_issue_id])  // Indeks gabungan unik
+}
+
+model mom_issue_attachment {
+  id          String   @id @default(uuid()) 
+  mom_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  link       String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  mom mom_issues?  @relation(fields: [mom_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model mom_issues_tasks {
+    id                  Int   @id @default(autoincrement()) 
+    assigned_user_id    Int?
+    task                String?
+    due_date            DateTime?
+    status Boolean      @default(false)
+    summary String?
+
+    createdAt         DateTime  @default(now())
+    updatedAt         DateTime  @updatedAt
+
+    assigned_user       users?  @relation(fields: [assigned_user_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+
+    mom_issue_id     Int?
+    mom_issue     mom_issues?  @relation(fields: [mom_issue_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model mom_issues_comments {
+    id              Int   @id @default(autoincrement()) 
+    mom_issue_id   Int?
+    comment         String?  
+    commented_id    Int?  // Foreign key ke komentar lain (optional)
+
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
+    comment_counter Int?
+
+    mom_issues_comments_attachments mom_issues_comments_attachments[]
+
+    mom_issue       mom_issues?  @relation(fields: [mom_issue_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    user_id         Int?
+    commenter       users?  @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    // Self-referencing relation
+    parentComment   mom_issues_comments? @relation("CommentReplies", fields: [commented_id], references: [id], onDelete: Cascade)
+    replies         mom_issues_comments[] @relation("CommentReplies")
+}
+
+
+model mom_issues_comments_attachments {
+  id          String   @id @default(uuid()) 
+  mom_issue_comments_id  Int? 
+  name        String?
+  path        String?
+  size        Int?       
+  type        String?    
+  link String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  mom_issue_comment mom_issues_comments?  @relation(fields: [mom_issue_comments_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model mom_activities {
+  id          String   @id @default(uuid()) 
+  issue_id  Int? 
+  user_id        Int?
+  detail      String?    
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  mom_issue              mom_issues?  @relation(fields: [issue_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+}
+
+model user_notification {
+  id          String   @id @default(uuid()) 
+  menu_id  Int? 
+  user_id Int?
+  notification_type notification_type?
+  is_read Boolean @default(false)
+  detail      String?    
+  redirect String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  user         users?  @relation(fields: [user_id], references: [id]  , onDelete: SetNull, onUpdate: SetNull)
+}
+
+enum notification_type {
+  MOM
+  ISSUE
+  TASK
+  COMMENT
+}
+
+
+enum priority {
+  HIGH
+  MID
+  LOW
+}
+
+enum status {
+  OPEN
+  COMPLETED
+}
+
+
+// fixed milestone
+
+model indicative_timeline_milestone_permission {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_permission_construction_attachment indicative_timeline_permission_construction_attachment[]
+    indicative_timeline_permission_construction_file indicative_timeline_permission_construction_file[]
+
+    indicative_timeline_milestone_permission_task indicative_timeline_milestone_permission_task[]
+}
+
+model indicative_timeline_permission_construction_attachment {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    timeline_id Int?
+    indicative_timeline         indicative_timeline_milestone_permission? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model indicative_timeline_permission_construction_file {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      timeline_id Int?
+      indicative_timeline         indicative_timeline_milestone_permission? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_milestone_penyedia_lahan {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_penyedia_lahan_construction_attachment indicative_timeline_penyedia_lahan_construction_attachment[]
+    indicative_timeline_penyedia_lahan_contruction_file indicative_timeline_penyedia_lahan_construction_file[]
+
+
+    indicative_timeline_milestone_penyedia_lahan_task indicative_timeline_milestone_penyedia_lahan_task[]
+}
+
+model indicative_timeline_penyedia_lahan_construction_attachment {
+    id              Int    @default(autoincrement())
+
+    attachment_link String
+    timeline_id     Int?
+    indicative_timeline indicative_timeline_milestone_penyedia_lahan? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    @@id([id], map: "id_attachment_pkey")  
+    @@unique([attachment_link], map: "unique_attachment_link") 
+
+    @@map("indicative_timeline_penyedia_lahan_construction_attachment") 
+}
+
+
+
+model indicative_timeline_penyedia_lahan_construction_file {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      timeline_id Int?
+      indicative_timeline         indicative_timeline_milestone_penyedia_lahan? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_milestone_construction {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_default_construction_attachment indicative_timeline_default_construction_attachment[]
+    indicative_timeline_default_construction_file indicative_timeline_default_construction_file[]
+
+    indicative_timeline_milestone_construction_task indicative_timeline_milestone_construction_task[]
+}
+
+model indicative_timeline_default_construction_attachment {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    timeline_id Int?
+    indicative_timeline         indicative_timeline_milestone_construction? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_default_construction_file {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      timeline_id Int?
+      indicative_timeline         indicative_timeline_milestone_construction? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model indicative_timeline_milestone_OPM {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_opm_construction_file indicative_timeline_opm_construction_file[]
+    indicative_timeline_opm_construction_attachment indicative_timeline_opm_construction_attachment[]
+
+    indicative_timeline_milestone_OPM_task indicative_timeline_milestone_OPM_task[]
+}
+
+model indicative_timeline_opm_construction_attachment {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    timeline_id Int?
+    indicative_timeline         indicative_timeline_milestone_OPM? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model indicative_timeline_opm_construction_file {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      timeline_id Int?
+      indicative_timeline         indicative_timeline_milestone_OPM? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_milestone_commercial_date {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_commercial_construction_attachment indicative_timeline_commercial_construction_attachment[]
+    indicative_timeline_commercial_construction_file indicative_timeline_commercial_construction_file[]
+
+    indicative_timeline_milestone_commercial_date_task indicative_timeline_milestone_commercial_date_task[]
+}
+
+
+model indicative_timeline_commercial_construction_attachment {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    timeline_id Int?
+    indicative_timeline         indicative_timeline_milestone_commercial_date? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_commercial_construction_file {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      timeline_id Int?
+      indicative_timeline         indicative_timeline_milestone_commercial_date? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model indicative_timeline_milestone_financial_close {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    project_id       Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_financial_close_construction_attachment indicative_timeline_financial_close_construction_attachment[]
+    indicative_timeline_financial_close_construction_file indicative_timeline_financial_close_construction_file[]
+
+    indicative_timeline_milestone_financial_close_task indicative_timeline_milestone_financial_close_task[]
+}
+
+model indicative_timeline_financial_close_construction_attachment {
+    id              Int    @default(autoincrement())
+    attachment_link String
+    timeline_id     Int?
+    indicative_timeline indicative_timeline_milestone_financial_close? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    @@id([id], map: "id_financial_close_attachment_pkey") // Nama unik untuk primary key
+    @@unique([attachment_link], map: "unique_financial_close_attachment_link") // Nama unik untuk unique constraint
+
+    @@map("indicative_timeline_financial_close_construction_attachment") // Nama unik untuk tabel
+}
+
+
+model indicative_timeline_financial_close_construction_file {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      timeline_id Int?
+      indicative_timeline         indicative_timeline_milestone_financial_close? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+// Tasknya
+
+model indicative_timeline_milestone_permission_task {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    timeline_id       Int?
+    indicative_timeline_milestone_permission         indicative_timeline_milestone_permission? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_permission_construction_file_task indicative_timeline_permission_construction_file_task[]
+    indicative_timeline_permission_construction_attachment_task  indicative_timeline_permission_construction_attachment_task[]
+}
+
+model indicative_timeline_permission_construction_attachment_task {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    task_id Int?
+    indicative_task         indicative_timeline_milestone_permission_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_permission_construction_file_task {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      task_id Int?
+      indicative_task         indicative_timeline_milestone_permission_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_milestone_penyedia_lahan_task {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    timeline_id       Int?
+    indicative_timeline_milestone_penyedia_lahan         indicative_timeline_milestone_penyedia_lahan? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_penyedia_lahan_construction_attachment_task indicative_timeline_penyedia_lahan_construction_attachment_task[]
+    indicative_timeline_penyedia_lahan_contruction_file_task indicative_timeline_penyedia_lahan_construction_file_task[]
+
+}
+
+model indicative_timeline_penyedia_lahan_construction_attachment_task {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    task_id Int?
+    indicative_task         indicative_timeline_milestone_penyedia_lahan_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_penyedia_lahan_construction_file_task {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      task_id Int?
+      indicative_task        indicative_timeline_milestone_penyedia_lahan_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_milestone_construction_task {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    timeline_id       Int?
+    indicative_timeline_milestone_construction         indicative_timeline_milestone_construction? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_default_construction_attachment_task indicative_timeline_default_construction_attachment_task[]
+    indicative_timeline_default_construction_file_task indicative_timeline_default_construction_file_task[]
+}
+
+model indicative_timeline_default_construction_attachment_task {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    task_id Int?
+    indicative_task         indicative_timeline_milestone_construction_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_default_construction_file_task {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      task_id Int?
+      indicative_task         indicative_timeline_milestone_construction_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model indicative_timeline_milestone_OPM_task {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    timeline_id       Int?
+    timeline         indicative_timeline_milestone_OPM? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+
+    indicative_timeline_opm_construction_attachment_task indicative_timeline_opm_construction_attachment_task[]
+
+    indicative_timeline_opm_construction_file_task indicative_timeline_opm_construction_file_task[]
+}
+
+model indicative_timeline_opm_construction_attachment_task {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    task_id Int?
+    indicative_task         indicative_timeline_milestone_OPM_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_opm_construction_file_task {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      task_id Int?
+      indicative_task         indicative_timeline_milestone_OPM_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_milestone_commercial_date_task {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    timeline_id       Int?
+    indicative_timeline_milestone_commercial_date         indicative_timeline_milestone_commercial_date? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_commercial_construction_attachment_task indicative_timeline_commercial_construction_attachment_task[]
+    indicative_timeline_commercial_construction_file_task indicative_timeline_commercial_construction_file_task[]
+}
+
+
+model indicative_timeline_commercial_construction_attachment_task {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    task_id Int?
+    indicative_task         indicative_timeline_milestone_commercial_date_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model indicative_timeline_commercial_construction_file_task {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      task_id Int?
+      indicative_task         indicative_timeline_milestone_commercial_date_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model indicative_timeline_milestone_financial_close_task {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    timeline_id       Int?
+    indicative_timeline_milestone_financial_close_task  indicative_timeline_milestone_financial_close? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+    indicative_timeline_financial_close_construction_attachment_task indicative_timeline_financial_close_construction_attachment_task[]
+    indicative_timeline_financial_close_construction_file_task indicative_timeline_financial_close_construction_file_task[]
+}
+
+model indicative_timeline_financial_close_construction_attachment_task {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    task_id Int?
+    indicative_timeline         indicative_timeline_milestone_financial_close_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_financial_close_construction_file_task {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      task_id Int?
+      indicative_timeline         indicative_timeline_milestone_financial_close_task? @relation(fields: [task_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+// model operation_productivity_rate {
+//     id               Int       @id @default(autoincrement())
+//     value Float?
+//     value_plan String?
+//     month String?
+//     year Int?
+
+//     project_id       Int?
+//     projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+// }
+
+// model operation_performance_ratio {
+//     id               Int       @id @default(autoincrement())
+//     value Float?
+//     value_plan String?
+//     month String?
+//     year Int?
+
+//     project_id       Int?
+//     projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+// }
+
+// model operation_plant_availabillity {
+//     id               Int       @id @default(autoincrement())
+//     value Float?
+//     value_plan String?
+//     month String?
+//     year Int?
+
+//     project_id       Int?
+//     projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+// }
+
+// model operation_penjualan_energy {
+//     id               Int       @id @default(autoincrement())
+//     value Float?
+//     value_plan String?
+//     month String?
+//     year Int?
+
+//     project_id       Int?
+//     projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+// }
+
+// model commercial_exchange_rate {
+//     id               Int       @id @default(autoincrement())
+//     value Float?
+//     value_plan String?
+//     month String?
+//     year Int?
+
+//     project_id       Int?
+//     projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+// }
+
+// model commercial_interest_margin {
+//     id               Int       @id @default(autoincrement())
+//     value Float?
+//     value_plan String?
+//     month String?
+//     year Int?
+
+//     project_id       Int?
+//     projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+// }
+
+model photo_scurve {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      project_id  Int? 
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+
+      project     projects? @relation(fields: [project_id], references: [id])
+}
+
+model project_photo_scurve_attachment {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    project_id Int?
+    projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model development_timeline {
+  id                      Int                       @id @default(autoincrement())
+  project_id              Int?
+  title                    String?                   @db.VarChar(255)
+  description     String?
+  attachment_link String?
+  type String?
+  date DateTime?
+  projects                projects?                 @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+
+  indicative_timeline_timeline_pengembangan indicative_timeline_timeline_pengembangan[]
+}
+
+model indicative_timeline_timeline_pengembangan {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    milestones_id       Int?
+    development_timeline         development_timeline? @relation(fields: [milestones_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+
+  indicative_timeline_timeline_pengembangan_attachment indicative_timeline_timeline_pengembangan_attachment[]
+  indicative_timeline_timeline_pengembangan_file indicative_timeline_timeline_pengembangan_file[]
+  indicative_timeline_task_pengembangan indicative_timeline_task_pengembangan[]
+}
+
+model indicative_timeline_timeline_pengembangan_attachment {
+    id                      Int                       @id @default(autoincrement())
+    attachment_link String @unique
+    timeline_id Int?
+    timelines         indicative_timeline_timeline_pengembangan? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_timeline_pengembangan_file {
+      id                      String                      @id @default(uuid())
+      name        String?
+      folder_id    Int?   @default(0)
+      uploaded_by Int?
+      owner       String?
+      path        String @unique
+      size        Int?       
+      type        String?   
+
+      createdAt   DateTime  @default(now())
+      updatedAt   DateTime  @updatedAt
+      timeline_id Int?
+      timelines         indicative_timeline_timeline_pengembangan? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model indicative_timeline_task_pengembangan {
+    id               Int       @id @default(autoincrement())
+    type  String?
+    title String?
+    target_date DateTime?
+    actual_date DateTime?
+    is_finished Boolean @default(false)
+    description String?
+    created_at       DateTime @default(now())
+
+    timeline_id       Int?
+    indicative_timeline_timeline_pengembangan indicative_timeline_timeline_pengembangan? @relation(fields: [timeline_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+
+model epc_cost_realization_construction {
+      id               Int       @id @default(autoincrement())
+      planned_payment         Float?     @default(0) 
+      realized_payment       Float?     @default(0) 
+      remaining_payment      Float?     @default(0) 
+      payment_progress       Float?     @default(0)
+      physical_progress      Float?     @default(0) 
+      month            String?
+      year             String?
+      date             DateTime?
+      project_id       Int?
+      projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+      @@index([project_id, month, year])
+}
+
+model esg_governance_score {
+  id        Int      @id @default(autoincrement())
+  project_id Int?
+  date      DateTime @default(now())
+  month     String
+  year      String?
+  score     Int? 
+  category  String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+
+model esg_info_leader {
+  id        Int      @id @default(autoincrement())
+  name String?
+  position String?
+  image_attachment String?
+  description String?
+  info String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model pembangkit {
+  id        Int      @id @default(autoincrement())
+  year Int?
+  name Int?
+  generated Int?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model scurve_weight {
+  id        Int      @id @default(autoincrement())
+  project_id Int?
+  date      DateTime @default(now())
+  weight    Float?
+  type String?
+  created_at DateTime @default(now())
+  created_by Int?
+  updated_at DateTime @updatedAt
+  updated_by Int?
+
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+  @@index([project_id, type])
+    @@unique([project_id, type])
+}
+model scurve {
+  id        Int      @id @default(autoincrement())
+  project_id Int?
+  date      DateTime @default(now())
+  actual    Float?
+  plan   Float?
+  type String?
+  created_at DateTime @default(now())
+  created_by Int?
+  updated_at DateTime @updatedAt
+  updated_by Int?
+
+  projects         projects? @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model cctv {
+  id Int @id @default(autoincrement())
+  project_id Int @unique
+  link String
+  projects         projects @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+
+model risiko {
+  id                      String         @id @default(uuid())
+  deskripsi_risiko        String
+  tingkat_risiko_residual String
+  created_at              DateTime       @default(now())
+  updated_at              DateTime       @updatedAt
+  created_by Int?
+  risiko_histories        risiko_history[]
+
+  users    users? @relation(fields: [created_by], references: [id], onDelete: SetNull, onUpdate: SetNull)
+}
+
+model risiko_history {
+  id                      String   @id @default(uuid())
+  risiko_id               String
+  deskripsi_risiko        String
+  tingkat_risiko_residual String
+  changed_at              DateTime @default(now())
+  created_by Int?
+
+  risiko                  risiko   @relation(fields: [risiko_id], references: [id], onDelete: Cascade)
+    users    users? @relation(fields: [created_by], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+
+model attachment_smrpik_template {
+  id         String   @id @default(uuid())
+  type       TemplateType
+  link       String
+  filename   String
+  created_at DateTime @default(now())
+}
+
+enum TemplateType {
+  DOKUMEN_MANAJEMEN_RISIKO
+  KAJIAN_RISIKO
+  ANALISA_RISIKO
+}
+
+
+model financial_actual {
+  id           String   @id @default(uuid())
+  year         Int      // Tahun
+  pendapatan   Float    // Pendapatan
+  ebitda       Float    // EBITDA
+  roa          Float    // Return on Assets (ROA)
+  roe          Float    // Return on Equity (ROE)
+  updated_at   DateTime @default(now()) @updatedAt
+  created_at   DateTime @default(now())
+financial_history financial_history[]
+  @@unique([year]) // Menjamin tidak ada duplikat berdasarkan year
+}
+
+model financial_history {
+  id           String   @id @default(uuid())
+  year         Int      // Tahun
+  pendapatan   Float    // Pendapatan
+  ebitda       Float    // EBITDA
+  roa          Float    // Return on Assets (ROA)
+  roe          Float    // Return on Equity (ROE)
+  created_at   DateTime @default(now())
+  created_by   Int   // User yang melakukan perubahan (misal: req.user.id)
+
+  // Relasi ke model financial_actual
+  financial_actual_id String
+  financial_actual    financial_actual @relation(fields: [financial_actual_id], references: [id])
+}
+
+
+model target_plan {
+  id        Int      @id @default(autoincrement())
+  plan    Float?
+  target   Float?
+  created_at DateTime @default(now())
+  created_by Int?
+  updated_at DateTime @updatedAt
+  updated_by Int?
+
+      users    users? @relation(fields: [created_by], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+
+model irr_on_equity {
+  id        Int      @id @default(autoincrement())
+  capaian    Float?
+  target   Float?
+  created_at DateTime @default(now())
+  created_by Int?
+  updated_at DateTime @updatedAt
+  updated_by Int?
+  project_id Int?
+  year Int
+  users    users? @relation(fields: [created_by], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  projects         projects?  @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([project_id, year])
+
+}
+
+model irr_on_equity_history {
+  id        Int      @id @default(autoincrement())
+  capaian    Float?
+  target   Float?
+  created_at DateTime @default(now())
+  created_by Int?
+  updated_at DateTime @updatedAt
+  updated_by Int?
+  project_id Int?
+  year Int
+
+  users    users? @relation(fields: [created_by], references: [id], onDelete: SetNull, onUpdate: SetNull)
+  projects         projects?  @relation(fields: [project_id], references: [id], onDelete: SetNull, onUpdate: SetNull)
+
+}
+
+model system_param {
+    id        Int      @id @default(autoincrement())
+    key String @unique
+    type String?
+    value String?
+    created_at DateTime @default(now())
+    created_by Int?
+    updated_at DateTime @updatedAt
+    updated_by Int?
+}
